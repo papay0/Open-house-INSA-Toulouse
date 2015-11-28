@@ -1,0 +1,24 @@
+<h1> INSA Toulouse </h1>
+
+<div class="container">
+  <h2>INSA JPO</h2>
+  <p>Veuillez selectionner les présentations.......</p>            
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Start</th>
+        <th>End</th>
+      </tr>
+    </thead>
+    <tbody>
+      	<% _.each(presentations, function (presentation) { %>
+      <tr>
+        <td><%= presentation.get('name') %></td>
+        <td><%= presentation.get('start').toLocaleString() %></td>
+        <td><%= presentation.get('end').toLocaleString() %></td>
+      </tr>
+      <% })%>
+    </tbody>
+  </table>
+</div>
