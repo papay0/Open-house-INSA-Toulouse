@@ -19,6 +19,10 @@
 
 module.exports.policies = {
 
+  'AdminController': {
+    '*': 'isAuthenticated'
+  }
+
   /***************************************************************************
   *                                                                          *
   * Default policy for all controllers and actions (`true` allows public     *

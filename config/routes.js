@@ -35,7 +35,25 @@ module.exports.routes = {
   '/': {
     controller: 'PresentationsController',
     action: '/'
+  },
+
+  'get /admin': {
+    view: 'Admin/index'
+  },
+
+  'get /login': {
+    view: 'Login/index'
+  },
+
+  'post /login': {
+    controller: 'UsersController',
+    action: 'login'
   }
+
+  // 'get /admin': {
+  //   controller: 'AdminController',
+  //   action: 'Admin'
+  // }
 
   /***************************************************************************
   *                                                                          *
