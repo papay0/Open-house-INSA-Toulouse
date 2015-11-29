@@ -25,7 +25,7 @@
  		var password = req.param('password');
  		Parse.User.logIn(email, password, {
  			success: function(user) {
- 				res.send(user);
+ 				return res.redirect('/');
  			},
  			error: function(user, error) {
  				res.send(error, 401);

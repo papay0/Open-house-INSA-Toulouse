@@ -54,6 +54,16 @@ module.exports.routes = {
   'get /logout': {
     controller: 'AuthController',
     action: 'logout'
+  },
+
+  'get /presentation/create': {
+    controller: 'DisplayViewController',
+    action: 'create'
+  },
+
+  'post /presentation/create': {
+    controller: 'PresentationsController',
+    action: 'create'
   }
 
 

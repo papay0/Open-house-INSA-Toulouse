@@ -1,0 +1,45 @@
+<div class="container">
+
+	<h1>Create presentation</h1>
+	<form class="form-horizontal" role="form" method="POST" action="/presentation/create">
+		<fieldset>
+
+			<!-- Form Name -->
+			<legend>Ajoutez une présentation</legend>
+
+			<!-- Text input-->
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="textinput">Nom</label>  
+				<div class="col-md-4">
+					<input id="textinput" name="name" type="text" placeholder="Nom de la présentation" class="form-control input-md" required="">
+
+				</div>
+			</div>
+
+			<!-- Text input-->
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="textinput">Début</label>  
+				<div class="col-md-4">
+					<input id="textinput" name="start" type="text" placeholder="Début présentation" class="form-control input-md" required="">
+
+				</div>
+			</div>
+
+			<!-- Text input-->
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="textinput">Fin </label>  
+				<div class="col-md-4">
+					<input id="textinput" name="end" type="text" placeholder="Fin présentation" class="form-control input-md" required="">
+
+				</div>
+			</div>
+
+			<!-- Button -->
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="create">Créer présentation</label>
+				<div class="col-md-4">
+					<button type="submit" name="create" class="btn btn-primary">Submit</button>
+				</div>
+			</div>
+
+		</div>

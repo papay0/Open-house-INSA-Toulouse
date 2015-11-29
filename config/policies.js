@@ -19,9 +19,20 @@
 
 module.exports.policies = {
 
+
   AdminController: {
     '*': 'isAdmin'
+  },
+
+
+  PresentationsController: {
+    'create': 'isAdmin'
+  },
+
+  DisplayViewController: {
+    'create': 'isAdmin'
   }
+ 
 
   /***************************************************************************
   *                                                                          *
