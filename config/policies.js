@@ -19,8 +19,8 @@
 
 module.exports.policies = {
 
-  'AdminController': {
-    '*': 'isAuthenticated'
+  AdminController: {
+    '*': 'isAdmin'
   }
 
   /***************************************************************************

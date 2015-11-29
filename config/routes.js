@@ -38,7 +38,8 @@ module.exports.routes = {
   },
 
   'get /admin': {
-    view: 'Admin/index'
+    controller: 'AdminController',
+    action: 'Admin'
   },
 
   'get /login': {
@@ -46,14 +47,15 @@ module.exports.routes = {
   },
 
   'post /login': {
-    controller: 'UsersController',
+    controller: 'AuthController',
     action: 'login'
+  },
+
+  'get /logout': {
+    controller: 'AuthController',
+    action: 'logout'
   }
 
-  // 'get /admin': {
-  //   controller: 'AdminController',
-  //   action: 'Admin'
-  // }
 
   /***************************************************************************
   *                                                                          *
