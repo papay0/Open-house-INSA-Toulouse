@@ -1,17 +1,14 @@
 module.exports = function(req, res, next) {
-  var bcrypt = require('bcrypt');  
-  
-  if (req.session["x-parse-session-token"]) {
-    var hash = req.session["isAdmin"];
-    sails.log("hash: "+hash);
-    sails.log(bcrypt.compareSync("true", hash));
-    var isAdmin = bcrypt.compareSync("true", hash);
-    if (isAdmin){
-      return next();
-    } else {
-      return res.forbidden();
-    }
-  } else {
-      return res.redirect('/login');
-  }
+
+    Parse.Cloud.run('isAdmin', {}, {
+      success: function(results) {
+        sails.log("results: "+results)
+        return next();
+      },
+      error: function(error) {
+        sails.log("error: "+error)
+       return res.redirect('/login');
+      }
+    });
+
 };

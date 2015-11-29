@@ -16,19 +16,15 @@
  	},
 
  	login: function(req, res) {
+ 		/*
+			I think it's better to use Parse.User.logIn then cloud code function.
+			Because I think it's more secude. 
+ 		*/
  		Parse.User.enableUnsafeCurrentUser();
  		var email = req.param('email');
  		var password = req.param('password');
  		Parse.User.logIn(email, password, {
  			success: function(user) {
- 				var isAdmin = false;
- 				if (user.get('admin')){
- 					isAdmin = true;
- 				} 
- 				req.session["x-parse-session-token"] = user._sessionToken;
- 				var bcrypt = require('bcrypt');
- 				var hashIsAdmin = bcrypt.hashSync(isAdmin.toString(), 10);
- 				req.session["isAdmin"] = hashIsAdmin;
  				res.send(user);
  			},
  			error: function(user, error) {
@@ -39,15 +35,16 @@
  	},
 
  	logout: function(req, res) {
- 		if (req.session["x-parse-session-token"]) {
- 			Parse.User.logOut();
- 			req.session.destroy(function(err) {
+ 		Parse.Cloud.run('logOut', {}, {
+ 			success: function(results) {
+ 				Parse.User.logOut();
+ 				sails.log("results: "+results)
  				return res.redirect('/');
- 			});
- 		} else {
- 			req.session.destroy(function(err) {
- 				return res.redirect('/');
- 			});
- 		}    	
+ 			},
+ 			error: function(error) {
+ 				sails.log("log out error: "+error)
+ 				return res.send(error, 500);
+ 			}
+ 		});
  	} 
  };

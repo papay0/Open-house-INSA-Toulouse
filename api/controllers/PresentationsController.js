@@ -15,7 +15,7 @@
  				});
  			},
  			error: function(error) {
- 				sails.log("Error: " + error.code + " " + error.message);
+ 				sails.log("Error: showPresentations " + error.code + " " + error.message);
  				res.view('500');
  			}
  		});
