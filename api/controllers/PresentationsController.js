@@ -21,7 +21,8 @@
  		});
  	},
 
- 	create: function(req, res){
+ 	createPost: function(req, res){
+ 		sails.log("PresentationsController --> create");
  		var name = req.param('name');
  		var start = req.param('start');
  		var end = req.param('end');
@@ -35,6 +36,11 @@
  				res.view('500');
  			}
  		});
+ 	},
+
+ 	create: function(req, res){
+ 		sails.log("PresentationsController --> createDisplayForm");
+ 		res.view('Presentation/create')
  	}
 
  };

@@ -32,17 +32,38 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': '/presentations',
+
+  /***************************************************************************
+  *                                                                          *
+  *                         Presentations                                    *
+  *                                                                          *
+  ***************************************************************************/
+  '/': {
+    controller: 'PresentationsController',
+    action: 'show'
+  },
  
   'get /presentations': {
     controller: 'PresentationsController',
     action: 'show'
   },
 
+  /***************************************************************************
+  *                                                                          *
+  *                              Admin                                       *
+  *                                                                          *
+  ***************************************************************************/
+
   'get /admin': {
     controller: 'AdminController',
     action: 'Admin'
   },
+
+ /***************************************************************************
+  *                                                                          *
+  *                              LogIn                                       *
+  *                                                                          *
+  ***************************************************************************/
 
   'get /login': {
     view: 'Login/index'
@@ -53,20 +74,18 @@ module.exports.routes = {
     action: 'login'
   },
 
+
+ /***************************************************************************
+  *                                                                          *
+  *                              LogOut                                       *
+  *                                                                          *
+  ***************************************************************************/
   'get /logout': {
     controller: 'AuthController',
     action: 'logout'
   },
 
-  'get /presentations/create': {
-    controller: 'DisplayViewController',
-    action: 'create'
-  },
 
-  'post /presentations': {
-    controller: 'PresentationsController',
-    action: 'create'
-  }
 
 
   /***************************************************************************
