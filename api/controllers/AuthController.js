@@ -34,20 +34,20 @@
 			});
 		},
 
-		logout: function(req, res) {
-			try {
-				var currentUser = Parse.User.current();
-				if (currentUser) {
-					Parse.User.logOut();
-					sails.log("I log out");
-					return res.redirect('/login');
-				} else {
-					sails.log("You were not logged in");
-					return res.redirect('/login');
-				}
-			} catch(error) {
+	logout: function(req, res) {
+		try {
+			var currentUser = Parse.User.current();
+			if (currentUser) {
+				Parse.User.logOut();
+				sails.log("I log out");
+				return res.redirect('/login');
+			} else {
 				sails.log("You were not logged in");
 				return res.redirect('/login');
 			}
+		} catch(error) {
+			sails.log("You were not logged in");
+			return res.redirect('/login');
 		}
+	}
 };
