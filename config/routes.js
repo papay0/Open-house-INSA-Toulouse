@@ -32,9 +32,11 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': {
+  '/': '/presentations',
+ 
+  'get /presentations': {
     controller: 'PresentationsController',
-    action: '/'
+    action: 'show'
   },
 
   'get /admin': {
@@ -56,12 +58,12 @@ module.exports.routes = {
     action: 'logout'
   },
 
-  'get /presentation/create': {
+  'get /presentations/create': {
     controller: 'DisplayViewController',
     action: 'create'
   },
 
-  'post /presentation/create': {
+  'post /presentations': {
     controller: 'PresentationsController',
     action: 'create'
   }

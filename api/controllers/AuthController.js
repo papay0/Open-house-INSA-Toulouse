@@ -42,7 +42,7 @@
  				return res.redirect('/');
  			},
  			error: function(error) {
- 				sails.log("log out error: "+error)
+ 				sails.log("[LogOut] Error: Code: "+error.code+" Message: "+error.message);
  				return res.send(error, 500);
  			}
  		});

@@ -5,7 +5,7 @@ Parse.Cloud.define("hello", function(request, response) {
 	response.success("Hello world!");
 });
 
-Parse.Cloud.define("showPresentations", function(request, response){
+Parse.Cloud.define("getPresentations", function(request, response){
 	var Presentations = Parse.Object.extend("Presentations");
 	var query = new Parse.Query(Presentations);
 	query.find({
@@ -20,10 +20,11 @@ Parse.Cloud.define("showPresentations", function(request, response){
 
 
 Parse.Cloud.define("logOut", function(request, response){
-	if (Parse.User.logOut()){
+	if (request.user){
+		Parse.User.logOut()
 		response.success("You're logged out");
 	} else {
-		response.error("Failed to logged out");
+		response.error("Failed to logged out, you were not logged in.");
 	}
 });
 
