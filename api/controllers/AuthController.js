@@ -7,13 +7,39 @@
 
  var passport = require('passport');
 
+	const PASSWD = "password";
+
  module.exports = {
+
 
  	_config: {
  		actions: false,
  		shortcuts: false,
  		rest: false
  	},
+
+ 	register:function(req, res) {
+ 		res.view('Auth/register');
+ 	},
+
+ 	registerUser:function(req, res) {
+ 		sails.log(req.param('email'));
+ 		var user = new Parse.User();
+		user.set("username", req.param('email'));
+		user.set("password", PASSWD);
+		//user.set("email", req.param('email'));
+		user.set("admin", false);
+
+		user.signUp(null, {
+			success: function(user) {
+				return res.redirect('/presentations');
+			},
+			error: function(user, error) {
+				sails.log("Error: register " + error.code + " " + error.message);
+				res.view('500');
+			}
+		});
+	},
 
  	login: function(req, res) {
  		/*
