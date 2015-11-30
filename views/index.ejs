@@ -14,10 +14,23 @@
       	<% _.each(presentations, function (presentation) { %>
       <tr>
         <td><%= presentation.get('name') %></td>
-        <td><%= presentation.get('start') %></td>
-        <td><%= presentation.get('end').toLocaleString("fr-FR") %></td>
+
+        <td id="start<%= presentation.get('name') %>"><%= presentation.get('start') %></td>
+        <td id="end<%= presentation.get('name') %>"><%= Date(presentation.get('end')) %></td>
+
       </tr>
       <% })%>
     </tbody>
   </table>
 </div>
+
+<script type="text/javascript">
+  $(function () {
+    <% _.each(presentations, function (presentation) { %>
+      var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
+      $("#start<%= presentation.get('name') %>").text(start);
+      var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
+      $("#end<%= presentation.get('name') %>").text(end);      
+    <% })%>
+  });
+</script>
