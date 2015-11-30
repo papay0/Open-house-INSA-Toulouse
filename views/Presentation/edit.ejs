@@ -13,19 +13,17 @@
               <th>Name</th>
               <th>Start</th>
               <th>End</th>
+              <th>Edit</th>
             </tr>
             <tr>
             <% var i = 1 %>
             <% _.each(presentations, function (presentation) { %>
-              <td> <%= i %>.</td>
+              <td id="<%= presentation.id %>"><%= i %>.</td>
               <% i++ %>
-              <td>Update software</td>
-              <td>
-                <div class="progress progress-xs">
-                  <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                </div>
-              </td>
-              <td><span class="badge bg-red">55%</span></td>
+              <td><%= presentation.get('name')%> </td>
+              <td><%= presentation.get('start').toLocaleString()%></td>
+              <td><%= presentation.get('end').toLocaleString()%></td>
+              <td><i class="glyphicon glyphicon-pencil" data-original-title="" title="" style="cursor: pointer;"></i></td>
             </tr>
             <% })%>
           </table>
