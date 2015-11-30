@@ -33,18 +33,16 @@ Parse.Cloud.define("isAdmin", function(request, response) {
 
 Parse.Cloud.define("createPresentation", function(request, response) {
 	if (request.user && request.user.get('admin')){
-		if (request.params.name){
+		if (request.params.name && request.params.start && request.params.end){
 			var format = "YYYY-MM-DD HH:mm";
 			var name = request.params.name;
-			var start = Date();
-			var end = Date();
-		//var start = Date(moment(request.params.start).format("DD/MM/YYYY"));
-		//var end = Date(moment(request.params.end).format("DD/MM/YYYY"));
-		var Presentation = Parse.Object.extend("Presentations");
-		var presentation = new Presentation();
-		presentation.set("name", name);
-		//presentation.set("start", start);
-		//presentation.set("end", end);
+			var start = new Date(request.params.start);
+			var end = new Date(request.params.end);
+			var Presentation = Parse.Object.extend("Presentations");
+			evar presentation = new Presentation();
+			presentation.set("name", name);
+			presentation.set("start", start);
+			presentation.set("end", end);
 
 		presentation.save(null, {
 			success: function(presentation) {

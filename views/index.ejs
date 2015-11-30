@@ -6,12 +6,16 @@
     <thead>
       <tr>
         <th>Name</th>
+        <th>Start</th>
+        <th>End</th>
       </tr>
     </thead>
     <tbody>
       	<% _.each(presentations, function (presentation) { %>
       <tr>
         <td><%= presentation.get('name') %></td>
+        <td><%= presentation.get('start') %></td>
+        <td><%= presentation.get('end').toLocaleString() %></td>
       </tr>
       <% })%>
     </tbody>
