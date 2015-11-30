@@ -5,14 +5,12 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
- var passport = require('passport');
+var passport = require('passport');
 
-	const PASSWD = "password";
-
- module.exports = {
+module.exports = {
 
 
- 	_config: {
+	_config: {
  		actions: false,
  		shortcuts: false,
  		rest: false
@@ -24,15 +22,17 @@
 
  	registerUser:function(req, res) {
  		sails.log(req.param('email'));
+ 		sails.log(Parse.User.current().getUsername());
+ 		sails.log(Parse.User.getUsername());
  		var user = new Parse.User();
 		user.set("username", req.param('email'));
-		user.set("password", PASSWD);
+		user.set("password", req.param('email'));
 		//user.set("email", req.param('email'));
 		user.set("admin", false);
 
 		user.signUp(null, {
 			success: function(user) {
-				return res.redirect('/presentations');
+				return res.redirect('/');
 			},
 			error: function(user, error) {
 				sails.log("Error: register " + error.code + " " + error.message);
@@ -43,22 +43,41 @@
 
  	login: function(req, res) {
  		/*
-			I think it's better to use Parse.User.logIn then cloud code function.
-			Because I think it's more secude. 
-			*/
-			Parse.User.enableUnsafeCurrentUser();
-			var email = req.param('email');
-			var password = req.param('password');
-			Parse.User.logIn(email, password, {
-				success: function(user) {
-					return res.redirect('/');
-				},
-				error: function(user, error) {
-					res.send(error, 401);
-					sails.log("user: "+user+" error: "+error+" email: "+email)
-				}
-			});
-		},
+		I think it's better to use Parse.User.logIn then cloud code function.
+		Because I think it's more secude. 
+		*/
+		Parse.User.enableUnsafeCurrentUser();
+		var email = req.param('email');
+		var password = req.param('email');
+		Parse.User.logIn(email, password, {
+			success: function(user) {
+				return res.redirect('/');
+			},
+			error: function(user, error) {
+				res.send(error, 401);
+				sails.log("user: "+user+" error: "+error+" email: "+email)
+			}
+		});
+	},
+
+	loginUser:function(req, res) {
+		/*
+		I think it's better to use Parse.User.logIn then cloud code function.
+		Because I think it's more secude. 
+		*/
+		Parse.User.enableUnsafeCurrentUser();
+		var email = req.param('email');
+		var password = PASSWD;
+		Parse.User.logIn(email, password, {
+			success: function(user) {
+				return res.redirect('/');
+			},
+			error: function(user, error) {
+				res.send(error, 401);
+				sails.log("user: "+user+" error: "+error+" email: "+email)
+			}
+		});
+	},
 
 	logout: function(req, res) {
 		try {
