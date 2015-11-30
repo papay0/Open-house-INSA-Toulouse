@@ -40,11 +40,28 @@
 
  	create: function(req, res){
  		//sails.log("PresentationsController --> createDisplayForm");
- 		 res.view('Presentation/create', {layout: 'Admin/admin'})
+ 		 res.view('Presentation/create', {
+ 		 	layout: 'Admin/admin'
+ 		 })
  		//res.locals.layout = 'Admin/admin';
  		//res.view('Admin/index', {layout: 'Admin/admin'});
  		//res.view('Admin/index');
 
+ 	},
+
+ 	edit: function(req, res){
+ 		Parse.Cloud.run('getPresentations', {}, {
+ 			success: function(results) {
+ 				res.view('Presentation/edit',{
+ 					presentations: results,
+ 					layout: 'Admin/admin'
+ 				});
+ 			},
+ 			error: function(error) {
+ 				sails.log("[Edit] Error: getPresentations " + error.code + " " + error.message);
+ 				res.view('500');
+ 			}
+ 		});
  	}
 
  };

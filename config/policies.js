@@ -28,7 +28,7 @@ module.exports.policies = {
   PresentationsController: {
     'create': 'isAdmin',
     'createDisplayForm': 'isAdmin',
-    'create': 'isAdmin'
+    'edit': 'isAdmin'
   },
 
 
