@@ -13,6 +13,24 @@ Parse.Cloud.define("getPresentations", function(request, response){
 	});
 });
 
+Parse.Cloud.define("register", function(request, response){
+	var user = new Parse.User();
+	user.set("username", request.username);
+	user.set("password", request.password);
+	user.set("email", request.mail);
+	user.set("admin", false);
+	user.set("emailVerified", false);
+
+	user.signUp(null, {
+	  success: function(user) {
+	    response.success(user);
+	  },
+	  error: function(user, error) {
+	    response.error(error);
+	  }
+	});
+});
+
 
 Parse.Cloud.define("logOut", function(request, response){
 	if (request.user){
