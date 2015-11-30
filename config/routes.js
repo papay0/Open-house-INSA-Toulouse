@@ -45,8 +45,13 @@ module.exports.routes = {
  
   'get /presentations': {
     controller: 'PresentationsController',
-    action: 'show'
+    action: 'create'
   },
+
+  // 'get /presentations/create': {
+  //   controller: 'PresentationsController',
+  //   action: 'create'
+  // },
 
   /***************************************************************************
   *                                                                          *

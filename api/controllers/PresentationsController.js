@@ -39,8 +39,12 @@
  	},
 
  	create: function(req, res){
- 		sails.log("PresentationsController --> createDisplayForm");
- 		res.view('Presentation/create')
+ 		//sails.log("PresentationsController --> createDisplayForm");
+ 		 res.view('Presentation/create', {layout: 'Admin/admin'})
+ 		//res.locals.layout = 'Admin/admin';
+ 		//res.view('Admin/index', {layout: 'Admin/admin'});
+ 		//res.view('Admin/index');
+
  	}
 
  };

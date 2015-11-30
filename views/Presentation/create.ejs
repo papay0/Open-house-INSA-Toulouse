@@ -15,32 +15,32 @@
 				</div>
 			</div>
 
-					<!-- PARTIE BOOTSTRATDATEPICKER -->
+			<!-- PARTIE BOOTSTRATDATEPICKER -->
 			<div class="container">
 				<legend>Début</legend>
-			    <div class='col-md-5'>
-			        <div class="form-group">
-			            <div class='input-group date' id='datetimepicker6'>
-			                <input id="textinput" name="start" type='text' placeholder="Début présentation"  class="form-control" required="" />
-			                <span class="input-group-addon">
-			                    <span class="glyphicon glyphicon-calendar"></span>
-			                </span>
-			            </div>
-			        </div>
-			    </div>
+				<div class='col-md-5'>
+					<div class="form-group">
+						<div class='input-group date' id='datetimepicker6'>
+							<input id="textinput" name="start" type='text' placeholder="Début présentation"  class="form-control" required="" />
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="container">
 				<legend>Fin</legend>
-			    <div class='col-md-5'>
-			        <div class="form-group">
-			            <div class='input-group date' id='datetimepicker7'>
-			                <input id="textinput" name="end" type='text' placeholder="Fin présentation" class="form-control" required=""/>
-			                <span class="input-group-addon">
-			                    <span class="glyphicon glyphicon-calendar"></span>
-			                </span>
-			            </div>
-			        </div>
-			    </div>
+				<div class='col-md-5'>
+					<div class="form-group">
+						<div class='input-group date' id='datetimepicker7'>
+							<input id="textinput" name="end" type='text' placeholder="Fin présentation" class="form-control" required=""/>
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+				</div>
 			</div>
 
 			<!-- Button -->
@@ -54,18 +54,19 @@
 
 		</fieldset>
 	</form>
+</div>
 
-	<script type="text/javascript">
-	    $(function () {
-	        $('#datetimepicker6').datetimepicker();
-	        $('#datetimepicker7').datetimepicker({
+<script type="text/javascript">
+	$(function () {
+		$('#datetimepicker6').datetimepicker();
+		$('#datetimepicker7').datetimepicker({
 	            useCurrent: false //Important! See issue #1075
 	        });
-	        $("#datetimepicker6").on("dp.change", function (e) {
-	            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
-	        });
-	        $("#datetimepicker7").on("dp.change", function (e) {
-	            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
-	        });
-	    });
-	</script>
+		$("#datetimepicker6").on("dp.change", function (e) {
+			$('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+		});
+		$("#datetimepicker7").on("dp.change", function (e) {
+			$('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+		});
+	});
+</script>
