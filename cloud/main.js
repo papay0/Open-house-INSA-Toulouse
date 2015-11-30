@@ -1,9 +1,4 @@
-
-// Use Parse.Cloud.define to define as many cloud functions as you want.
-// For example:
-Parse.Cloud.define("hello", function(request, response) {
-	response.success("Hello world!");
-});
+var moment = require('moment');
 
 Parse.Cloud.define("getPresentations", function(request, response){
 	var Presentations = Parse.Object.extend("Presentations");
@@ -38,26 +33,33 @@ Parse.Cloud.define("isAdmin", function(request, response) {
 
 Parse.Cloud.define("createPresentation", function(request, response) {
 	if (request.user && request.user.get('admin')){
-		var name = request.params.name;
-		var start = request.params.start;
-		var end = request.params.end;
+		if (request.params.name){
+			var format = "YYYY-MM-DD HH:mm";
+			var name = request.params.name;
+			var start = Date();
+			var end = Date();
+		//var start = Date(moment(request.params.start).format("DD/MM/YYYY"));
+		//var end = Date(moment(request.params.end).format("DD/MM/YYYY"));
 		var Presentation = Parse.Object.extend("Presentations");
 		var presentation = new Presentation();
 		presentation.set("name", name);
-		presentation.set("start", start);
-		presentation.set("end", end);
+		//presentation.set("start", start);
+		//presentation.set("end", end);
 
 		presentation.save(null, {
 			success: function(presentation) {
 				response.success("Presentation added: "+presentation);
 			},		
-			error: function(gameScore, error) {
-				response.error("Failed to add presentation Object in Parse database: "+error);
+			error: function(presentation, error) {
+				response.error("Failed to add presentation Object in Parse database: "+error.message);
 			}
 		});
 	} else {
-		response.error("You need to be an administrateur to create a presentation!");
+		response.error("You didn't give all the arguments.");	
 	}
+} else {
+	response.error("You need to be an administrateur to create a presentation!");
+}
 });
 
 Parse.Cloud.define("isConnected", function(request, response) {
