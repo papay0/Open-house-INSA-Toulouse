@@ -13,25 +13,6 @@ Parse.Cloud.define("getPresentations", function(request, response){
 	});
 });
 
-Parse.Cloud.define("register", function(request, response){
-	var user = new Parse.User();
-	user.set("username", request.username);
-	user.set("password", request.password);
-	user.set("email", request.mail);
-	user.set("admin", false);
-	user.set("emailVerified", false);
-
-	user.signUp(null, {
-	  success: function(user) {
-	    response.success(user);
-	  },
-	  error: function(user, error) {
-	    response.error(error);
-	  }
-	});
-});
-
-
 Parse.Cloud.define("logOut", function(request, response){
 	if (request.user){
 		Parse.User.logOut()
@@ -57,7 +38,7 @@ Parse.Cloud.define("createPresentation", function(request, response) {
 			var start = new Date(request.params.start);
 			var end = new Date(request.params.end);
 			var Presentation = Parse.Object.extend("Presentations");
-			evar presentation = new Presentation();
+			var presentation = new Presentation();
 			presentation.set("name", name);
 			presentation.set("start", start);
 			presentation.set("end", end);

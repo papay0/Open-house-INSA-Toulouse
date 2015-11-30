@@ -64,6 +64,23 @@ module.exports.routes = {
     action: 'Admin'
   },
 
+
+ /***************************************************************************
+  *                                                                          *
+  *                              Register                                       *
+  *                                                                          *
+  ***************************************************************************/
+
+  'get /register': {
+    view: 'Auth/register'
+  },
+
+  'post /register': {
+    controller: 'AuthController',
+    action: 'registerUser'
+  },
+
+
  /***************************************************************************
   *                                                                          *
   *                              LogIn                                       *
@@ -71,7 +88,7 @@ module.exports.routes = {
   ***************************************************************************/
 
   'get /login': {
-    view: 'Login/index'
+    view: 'Auth/login'
   },
 
   'post /login': {
