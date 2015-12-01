@@ -25,7 +25,7 @@
  		Parse.Cloud.run('suscribePresentation', {presentationId : req.param('presentationId')}, {
  			success: function(results) {
  				sails.log("On a réussi ! " + results);
- 				res.view('/');
+ 				return res.redirect('/');
  			},
  			error: function(error) {
  				sails.log("Error: getPresentations " + error.code + " " + error.message);

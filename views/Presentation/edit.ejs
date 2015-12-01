@@ -2,42 +2,55 @@
   <div class="row">
 
 
-      <div class="box">
-        <div class="box-header with-border">
-          <h3 class="box-title">Select a presentation</h3>
-        </div><!-- /.box-header -->
-        <div class="box-body">
-          <table class="table table-bordered">
-            <tr>
-              <th style="width: 10px">#</th>
-              <th>Name</th>
-              <th>Start</th>
-              <th>End</th>
-              <th style="width: 40px">Edit</th>
-            </tr>
-            <tr>
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">Select a presentation</h3>
+      </div><!-- /.box-header -->
+      <div class="box-body">
+        <table class="table table-bordered">
+          <tr>
+            <th style="width: 10px">#</th>
+            <th>Name</th>
+            <th>Start</th>
+            <th>End</th>
+            <th style="width: 40px">Edit</th>
+          </tr>
+          <tr>
             <% var i = 1 %>
             <% _.each(presentations, function (presentation) { %>
-              <td id="<%= presentation.id %>"><%= i %>.</td>
-              <% i++ %>
-              <td><%= presentation.get('name')%> </td>
-              <td><%= presentation.get('start').toLocaleString()%></td>
-              <td><%= presentation.get('end').toLocaleString()%></td>
-              <td><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-pencil" data-original-title="" title="" style="cursor: pointer;"></i></button></td>
-            </tr>
-            <% })%>
-          </table>
-        </div><!-- /.box-body -->
-        <div class="box-footer clearfix">
-          <ul class="pagination pagination-sm no-margin pull-right">
-            <li><a href="#">&laquo;</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">&raquo;</a></li>
-          </ul>
+            <td id="<%= presentation.id %>"><%= i %>.</td>
+            <% i++ %>
+            <td><%= presentation.get('name')%> </td>
+            <td><%= presentation.get('start').toLocaleString()%></td>
+            <td><%= presentation.get('end').toLocaleString()%></td>
+            <td><i class="glyphicon glyphicon-pencil" data-original-title=""  data-toggle="modal" data-target="#myModal"title="" style="cursor: pointer;"></i></td>
+            
+          </tr>
+          <% })%>
+        </table>
+      </div><!-- /.box-body -->
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+        
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Modal Header</h4>
+          </div>
+          <div class="modal-body">
+            <p>Some text in the modal.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
         </div>
+        
       </div>
+    </div>
     
   </div>
 </section>
