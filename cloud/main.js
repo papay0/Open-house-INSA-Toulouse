@@ -27,7 +27,7 @@ Parse.Cloud.define("suscribePresentation", function(request, response){
 		console.log("test");
 		var presentations = Parse.Object.extend("Presentations");
 		var query = new Parse.Query(presentations);
-		query.get("xBtNbzVYRK", {
+		query.get(request.params.presentationID, {
 		  success: function(object) {
 		    var presentation = object;
 		    var user = Parse.User.current();
