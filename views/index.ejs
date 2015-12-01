@@ -15,14 +15,12 @@
       	<% _.each(presentations, function (presentation) { %>
       <tr>
         <td><%= presentation.get('name') %></td>
-
-        <td id="start<%= presentation.get('name') %>"><%= presentation.get('start') %></td>
-        <td id="end<%= presentation.get('name') %>"><%= Date(presentation.get('end')) %></td>
+        <td id="start<%= presentation.id %>"></td>
+        <td id="end<%= presentation.id %>"></td>
         <td>
           <form action="/suscribePresentation" method="POST">
             <input type="hidden" name="presentationID" value="<%= presentation.id %>" />
-            <input type="submit" value="Souscrire">
-          </form>
+            <input type="submit" value="Souscrire" class="btn btn-primary" />
         </td>
       </tr>
       <% })%>
@@ -34,9 +32,9 @@
   $(function () {
     <% _.each(presentations, function (presentation) { %>
       var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
-      $("#start<%= presentation.get('name') %>").text(start);
+      $("#start<%= presentation.id %>").text(start);
       var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
-      $("#end<%= presentation.get('name') %>").text(end);      
+      $("#end<%= presentation.id %>").text(end);      
     <% })%>
   });
 
