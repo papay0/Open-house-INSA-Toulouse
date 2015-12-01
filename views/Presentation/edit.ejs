@@ -21,8 +21,8 @@
             <td id="<%= presentation.id %>"><%= i %>.</td>
             <% i++ %>
             <td><%= presentation.get('name')%> </td>
-            <td><%= presentation.get('start').toLocaleString()%></td>
-            <td><%= presentation.get('end').toLocaleString()%></td>
+            <td id="start<%= presentation.id %>">a</td>
+            <td id="end<%= presentation.id %>">b</td>
             <td><i class="glyphicon glyphicon-pencil" data-original-title=""  data-toggle="modal" data-target="#myModal" title="" style="cursor: pointer;"></i></td>
           </tr>
           <% })%>
@@ -50,7 +50,7 @@
               <div class="form-group">
                 <label class="col-md-4 control-label" for="start">Start</label>  
                 <div class="col-md-4">
-                  <input id="start" name="start" type="text" placeholder="placeholder" class="form-control input-md">
+                  <input id="start" name="start" type="text" placeholder="placeholder" class="form-control input-md" >
 
                 </div>
               </div>
@@ -81,3 +81,16 @@
     
   </div>
 </section>
+
+ <script type="text/javascript">
+  $(function () {
+    <% _.each(presentations, function (presentation) { %>
+      var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
+      alert($("#start<%= presentation.id %>").text()); 
+      $("#start<%= presentation.id %>").text(start);
+      $("#name").;
+      var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
+      $("#end<%= presentation.id %>").text(end);      
+    <% })%>
+  });
+</script>

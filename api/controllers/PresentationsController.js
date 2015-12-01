@@ -23,7 +23,9 @@
 
  	suscribePresentation: function(req, res){
  		sails.log(req.param('presentationId'));
- 		Parse.Cloud.run('suscribePresentation', {presentationId : req.param('presentationId')}, {
+ 		var presentationId = req.param('presentationId');
+ 		sails.log(presentationId);
+ 		Parse.Cloud.run('suscribePresentation', {presentationId: presentationId}, {
  			success: function(results) {
  				sails.log("On a réussi ! " + results);
  				return res.redirect('/');

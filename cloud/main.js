@@ -24,10 +24,9 @@ Parse.Cloud.define("logOut", function(request, response){
 
 Parse.Cloud.define("suscribePresentation", function(request, response){
 	if (request.user){
-		console.log("test");
 		var presentations = Parse.Object.extend("Presentations");
 		var query = new Parse.Query(presentations);
-		query.get(request.params.presentationID, {
+		query.get(request.params.presentationId, {
 		  success: function(object) {
 		    var presentation = object;
 		    var user = Parse.User.current();
@@ -43,7 +42,7 @@ Parse.Cloud.define("suscribePresentation", function(request, response){
 			});
 		  },
 		  error: function(object, error) {
-			response.error("Failed to fin presentation Object with ID in Parse database: "+error.message);
+			response.error("Failed to fin presentation Object with ID in Parse database: "+request.params.presentationID+"  &&   "+error.message);
 		  }
 		});
 	} else {

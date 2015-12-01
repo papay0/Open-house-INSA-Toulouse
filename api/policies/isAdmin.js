@@ -5,11 +5,11 @@ try {
    if (currentUser.get('admin')) {
     return next();
   } else {
-    return res.redirect('/login');
+    return res.redirect('/loginAdmin');
   }
 } catch(error) {
   //sails.log("[Policies isAdmin error] Code: "+error.code+" Message: "+error.message);
-  return res.redirect('/login');
+  return res.redirect('/loginAdmin');
 }
 
 

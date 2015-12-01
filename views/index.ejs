@@ -1,5 +1,4 @@
 <div class="container">
-  <div id="example">coucou</div>
   <h1> INSA Toulouse </h1>
   <h2>INSA JPO</h2>
   <p>Veuillez selectionner les présentations. </p>            
@@ -21,6 +20,7 @@
           <form action="/suscribePresentation" method="POST">
             <input type="hidden" name="presentationId" value="<%= presentation.id %>" />
             <input type="submit" value="Souscrire" class="btn btn-primary" />
+          </form>
         </td>
       </tr>
       <% })%>
@@ -37,10 +37,4 @@
       $("#end<%= presentation.id %>").text(end);      
     <% })%>
   });
-
-  ReactDOM.render(React.createElement(
-    'h1',
-    null,
-    'React installed!'
-  ), document.getElementById('example'));
 </script>
