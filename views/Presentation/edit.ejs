@@ -13,7 +13,7 @@
               <th>Name</th>
               <th>Start</th>
               <th>End</th>
-              <th>Edit</th>
+              <th style="width: 40px">Edit</th>
             </tr>
             <tr>
             <% var i = 1 %>
@@ -23,7 +23,7 @@
               <td><%= presentation.get('name')%> </td>
               <td><%= presentation.get('start').toLocaleString()%></td>
               <td><%= presentation.get('end').toLocaleString()%></td>
-              <td><i class="glyphicon glyphicon-pencil" data-original-title="" title="" style="cursor: pointer;"></i></td>
+              <td><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-pencil" data-original-title="" title="" style="cursor: pointer;"></i></button></td>
             </tr>
             <% })%>
           </table>
