@@ -22,6 +22,7 @@
  	},
 
  	suscribePresentation: function(req, res){
+ 		sails.log(req.param('presentationId'));
  		Parse.Cloud.run('suscribePresentation', {presentationId : req.param('presentationId')}, {
  			success: function(results) {
  				sails.log("On a réussi ! " + results);
