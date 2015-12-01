@@ -81,6 +81,18 @@ module.exports.routes = {
   },
 
 
+  /***************************************************************************
+  *                                                                          *
+  *                              suscribePresentation                        *
+  *                                                                          *
+  ***************************************************************************/
+
+  'post /suscribePresentation': {
+    controller: 'PresentationsController',
+    action: 'suscribePresentation'
+  },
+
+
  /***************************************************************************
   *                                                                          *
   *                              LogIn                                       *

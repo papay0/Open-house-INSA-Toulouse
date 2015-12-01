@@ -26,13 +26,13 @@ var jsFilesToInject = [
   
   // Load sails.io before everything else
   'js/dependencies/sails.io.js',
-  'js/dependencies/jquery.js',
   'js/dependencies/bootstrap.min.js',
 
   
 
-  //DatePicker JS
+  //MomentJS
   'js/dependencies/moment/min/moment.min.js',
+  //DatePicker JS
   'js/dependencies/bootstrap-datetimepicker.min.js',
 
   //NORMALEMENT CES LIGNES SONT DECOMMENTEES

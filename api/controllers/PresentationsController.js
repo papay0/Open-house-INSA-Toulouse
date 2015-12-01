@@ -21,6 +21,19 @@
  		});
  	},
 
+ 	suscribePresentation: function(req, res){
+ 		Parse.Cloud.run('suscribePresentation', {presentationId : req.param('presentationId')}, {
+ 			success: function(results) {
+ 				sails.log("On a réussi ! " + results);
+ 				res.view('/');
+ 			},
+ 			error: function(error) {
+ 				sails.log("Error: getPresentations " + error.code + " " + error.message);
+ 				res.view('500');
+ 			}
+ 		});
+ 	},
+
  	createPost: function(req, res){
  		sails.log("PresentationsController --> create");
  		var name = req.param('name');
