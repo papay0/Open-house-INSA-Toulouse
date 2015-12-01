@@ -23,35 +23,41 @@ Parse.Cloud.define("logOut", function(request, response){
 });
 
 Parse.Cloud.define("suscribePresentation", function(request, response){
-	var presentations = Parse.Object.extend("Presentations");
-	var query = new Parse.Query(presentations);
-	query.equalTo("objectId", request.params.presentationID);
-	query.find({
-	  success: function(results) {
-	    alert("Successfully retrieved " + results.length + " scores.");
-	    //Attention peut ne pas marcher
-	    var presentation = results;
-	    // Peut-être que cette methode marche mieux !
-	    /*for (var i = 0; i < results.length; i++) {
-	      var object = results[i];
-	      alert(object.id + ' - ' + object.get('playerName'));
-	    }*/
-	    var user = Parse.User.current();
-		var relation = user.relation("selectedPrs");
-		relation.add(presentation);
-		user.save(null, {
-			success: function(presentation) {
-				response.success(" Presentation suscribed ");
-			},		
-			error: function(presentation, error) {
-				response.error("Failed to add presentation Object in Parse database: "+error.message);
-			}
+	if (request.user){
+		console.log("test");
+		var presentations = Parse.Object.extend("Presentations");
+		var query = new Parse.Query(presentations);
+		query.equalTo("objectId", request.params.presentationID);
+		query.find({
+		  success: function(results) {
+		  	console.log("coucou");
+		    alert("Successfully retrieved " + results.length + " scores.");
+		    //Attention peut ne pas marcher
+		    var presentation = results[0];
+		    // Peut-être que cette methode marche mieux !
+		    /*for (var i = 0; i < results.length; i++) {
+		      var object = results[i];
+		      alert(object.id + ' - ' + object.get('playerName'));
+		    }*/
+		    var user = Parse.User.current();
+			var relation = user.relation("selectedPrs");
+			relation.add(presentation);
+			user.save(null, {
+				success: function(presentation) {
+					response.success(" Presentation suscribed ");
+				},		
+				error: function(presentation, error) {
+					response.error("Failed to add presentation Object in Parse database: "+error.message);
+				}
+			});
+		  },
+		  error: function(error) {
+		    response.error("Failed to find presentation Object in Parse database: "+error.message);
+		  }
 		});
-	  },
-	  error: function(error) {
-	    response.error("Failed to find presentation Object in Parse database: "+error.message);
-	  }
-	});
+		} else {
+			response.error("You are not logged in : "+error.message);
+		}
 });
 
 Parse.Cloud.define("isAdmin", function(request, response) {
