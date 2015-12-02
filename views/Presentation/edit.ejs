@@ -20,10 +20,10 @@
             <% _.each(presentations, function (presentation) { %>
             <td id="<%= presentation.id %>"><%= i %>.</td>
             <% i++ %>
-            <td><%= presentation.get('name')%> </td>
+            <td id="name<%= presentation.id %>"><%= presentation.get('name')%> </td>
             <td id="start<%= presentation.id %>">a</td>
             <td id="end<%= presentation.id %>">b</td>
-            <td><i class="glyphicon glyphicon-pencil" data-original-title=""  data-toggle="modal" data-target="#myModal" title="" style="cursor: pointer;"></i></td>
+            <td> <i id="<%= presentation.id %>" class="glyphicon glyphicon-pencil" data-original-title=""  data-toggle="modal" data-target="#myModal" title="myTitle" style="cursor: pointer;"></i></td>
           </tr>
           <% })%>
         </table>
@@ -35,7 +35,7 @@
       <div class="modal-dialog">
 
         <!-- Modal content-->
-        <div class="modal-content">
+        <div class="modal-content" style=".modal-dialog-center {margin-top: 25%;}">
           <form class="form-horizontal">
             <fieldset>
               <legend>Edit presentation</legend>
@@ -43,7 +43,7 @@
               <div class="form-group">
                 <label class="col-md-4 control-label" for="name">Name</label>  
                 <div class="col-md-4">
-                  <input id="name" name="name" type="text" placeholder="placeholder" class="form-control input-md">
+                  <input id="name" name="name" type="text" placeholder="placeholder" class="form-control input-md" value="myValue1">
                 </div>
               </div>
               <!-- Text input-->
@@ -86,11 +86,29 @@
   $(function () {
     <% _.each(presentations, function (presentation) { %>
       var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
-      alert($("#start<%= presentation.id %>").text()); 
+      //alert($("#start<%= presentation.id %>").text()); 
       $("#start<%= presentation.id %>").text(start);
-      $("#name").;
       var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
       $("#end<%= presentation.id %>").text(end);      
     <% })%>
+
+    $('[data-target="#myModal"]').click(function(event) {
+        var id = this.id;
+        var name = $('#name'+id).text();
+        var start = $("#start"+id).text();
+        var end = $("#end"+id).text();
+        fillModal(id, name, start, end);
+    });
+
+    function fillModal(id, name, start, end){
+      var lineName = $('.col-md-4 #name');
+      var lineStart = $('.col-md-4 #start');
+      var lineEnd = $('.col-md-4 #end');
+      lineName.attr('value', name);
+      lineStart.attr('value', start);
+      lineEnd.attr('value', end);
+    }
+
+
   });
 </script>

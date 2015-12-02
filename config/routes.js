@@ -48,11 +48,6 @@ module.exports.routes = {
     action: 'create'
   },
 
-  // 'get /presentations/create': {
-  //   controller: 'PresentationsController',
-  //   action: 'create'
-  // },
-
   /***************************************************************************
   *                                                                          *
   *                              Admin                                       *
@@ -66,13 +61,13 @@ module.exports.routes = {
 
 
  /***************************************************************************
-  *                                                                          *
-  *                              Register                                       *
-  *                                                                          *
+  *                                                                         *
+  *                              Register                                   *
+  *                                                                         *
   ***************************************************************************/
 
   'get /register': {
-    view: 'Auth/register'
+    view: 'Auth/register',
   },
 
   'post /register': {
@@ -99,6 +94,10 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
+  'get /loginAdmin': {
+    view: 'Auth/loginAdmin'
+  },
+
   'get /login': {
     view: 'Auth/login'
   },
@@ -109,13 +108,13 @@ module.exports.routes = {
   },
 
    /***************************************************************************
-  *                                                                          *
-  *                              LogIn                                       *
-  *                                                                          *
+  *                                                                           *
+  *                              LogIn    (?)                                 *
+  *                                                                           *
   ***************************************************************************/
 
   'get /loginuser': {
-    view: 'Auth/loginUser'
+    view: 'Auth/login'
   },
 
   'post /loginuser': {
@@ -126,7 +125,7 @@ module.exports.routes = {
 
  /***************************************************************************
   *                                                                          *
-  *                              LogOut                                       *
+  *                              LogOut                                      *
   *                                                                          *
   ***************************************************************************/
   'get /logout': {
