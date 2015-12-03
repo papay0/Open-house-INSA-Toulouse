@@ -14,7 +14,9 @@ module.exports = function(req, res, next) {
           error: function(user, error) {
             res.clearCookie('username');
             sails.log("[Policies isAuthenticated error] Error: authentificated"+error);
-            return res.redirect('/login');
+            return res.view('Auth/login', {
+              nextPage : req.url
+            });
           }
         });
       }else{

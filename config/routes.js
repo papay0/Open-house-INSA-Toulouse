@@ -115,7 +115,10 @@
     },
 
     'get /login': {
-        view: 'Auth/login'
+        view: 'Auth/login',
+        locals : {
+            nextPage : "/"
+        }
     },
 
     'post /login': {

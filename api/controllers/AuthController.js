@@ -40,6 +40,11 @@ module.exports = {
 		I think it's better to use Parse.User.logIn than cloud code function.
 		Because I think it's more secure. 
 		*/
+
+		sails.log(req.user);
+		sails.log(req.session.sid);
+		sails.log(sails.sid);
+		sails.log(req.session);
 		if (req.user == undefined){
 			Parse.User.enableUnsafeCurrentUser();
 			var email = req.param('email');
