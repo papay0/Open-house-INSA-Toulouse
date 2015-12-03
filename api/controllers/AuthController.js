@@ -16,10 +16,6 @@ module.exports = {
  		rest: false
  	},
 
- 	register:function(req, res) {
- 		res.view('Auth/register');
- 	},
-
  	registerUser:function(req, res) {
  		sails.log(req.param('email'));
  		var user = new Parse.User();
@@ -34,7 +30,7 @@ module.exports = {
 			},
 			error: function(user, error) {
 				sails.log("Error: register " + error.code + " " + error.message);
-				res.view('500');
+				res.view('500', {error : "Error: register " + error.code + " " + error.message});
 			}
 		});
 	},
@@ -56,35 +52,17 @@ module.exports = {
 					}else{
 						sails.log("On ne met pas de cookie");
 					}
-					return res.redirect('/');
+					sails.log(req.url);
+					return res.redirect(req.param('nextPage'));
 				},
 				error: function(user, error) {
-					res.send(error, 401);
+					res.view('500', {error : "Error: login " + error.code + " " + error.message});
 					sails.log("user: "+user+" error: "+error+" email: "+email)
 				}
 			});
 		}else{
 			return res.redirect('/');
 		}
-	},
-
-	loginUser:function(req, res) {
-		/*
-		I think it's better to use Parse.User.logIn than cloud code function.
-		Because I think it's more secure. 
-		*/
-		Parse.User.enableUnsafeCurrentUser();
-		var email = req.param('email');
-		var password = PASSWD;
-		Parse.User.logIn(email, password, {
-			success: function(user) {
-				return res.redirect('/');
-			},
-			error: function(user, error) {
-				res.send(error, 401);
-				sails.log("user: "+user+" error: "+error+" email: "+email)
-			}
-		});
 	},
 
 	logout: function(req, res) {

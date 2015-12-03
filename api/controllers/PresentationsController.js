@@ -16,7 +16,8 @@
  			},
  			error: function(error) {
  				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error: show " + error.code + " " + error.message});
+
  			}
  		});
  	},
@@ -32,12 +33,13 @@
 					latitudeDestination : object.get('geolocation').latitude,
 					longitudeDestination : object.get('geolocation').longitude
 				});
-			}else{sails.log("Error: goto, maybe the location have no location defined yet " + error.code + " " + error.message);
- 				return res.view('500');}
+			}else{
+				sails.log("Error: goto, maybe the location have no location defined yet " + error.code + " " + error.message);
+ 				res.view('500', {error : "Error: goto, maybe the location of the presentation is not defined yet " + error.code + " " + error.message});
 			},
 			error: function(object, error) {
 				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				return res.view('500');
+ 				res.view('500', {error : "Error: presentation not found" + error.code + " " + error.message});
 			}
 		});
  	},
@@ -52,12 +54,12 @@
 					});
 	 			}else{
 	 				sails.log("Error: The presentation have no location defined yet " + error.code + " " + error.message);
- 					return res.view('500');
+ 					res.view('500', {error : "Error: goto, maybe the location of the presentation is not defined yet " + error.code + " " + error.message});
 	 			}
  			},
  			error: function(error) {
  				sails.log("Error: goto, maybe the location have no location defined yet " + error.code + " " + error.message);
- 				return res.view('500');
+ 				res.view('500', {error : "Error: presentation not found " + error.code + " " + error.message});
  			}
  		});
  	},
@@ -71,7 +73,7 @@
  			},
  			error: function(error) {
  				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				return res.view('500');
+ 				res.view('500', {error : "Error: Planning not found " + error.code + " " + error.message});
  			}
  		});
  	},
@@ -85,7 +87,7 @@
  			},
  			error: function(error) {
  				sails.log("Error: removePresentations " + error.code + " " + error.message);
- 				return res.view('500');
+ 				res.view('500', {error : "Error: Unable to remove presentation " + error.code + " " + error.message});
  			}
  		});
  	},
@@ -101,7 +103,7 @@
  			},
  			error: function(error) {
  				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error: Unable to suscribe to this presentation " + error.code + " " + error.message});
  			}
  		});
  	},
@@ -118,7 +120,7 @@
  			},
  			error: function(error) {
  				sails.log("Error: createPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error: unable to create the presentation " + error.code + " " + error.message});
  			}
  		});
  	},
@@ -139,7 +141,7 @@
  			},
  			error: function(error) {
  				sails.log("[Edit] Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error editing Presentation " + error.code + " " + error.message});
  			}
  		});
  	},
@@ -160,12 +162,12 @@
  				},
  				error: function(error) {
  					sails.log("[Edit] Error: updatePresentation " + error.code + " " + error.message);
- 					res.view('500');
+ 					res.view('500', {error : "Error: Unable to edit this post " + error.code + " " + error.message});
  				}
  			});
  		} else {
  			sails.log("editPost, it's not a json ...")
- 			res.view('500');
+ 			res.view('500', {error : "Error: editPost " + error.code + " " + error.message});
  		}		
  	}
 
