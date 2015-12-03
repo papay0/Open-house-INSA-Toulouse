@@ -16,77 +16,79 @@
  			},
  			error: function(error) {
  				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error: show " + error.code + " " + error.message});
+
  			}
  		});
  	},
 
- 	showPlanningNonCloudCode: function(req, res){
- 		Parse.User.current().fetch().then(function (user) {
-		    var query = user.relation("selectedPrs").query();
-		    query.find({
-				success: function(results) {
-					res.view(null, {
-						presentations: results
-					});
-				},
-				error: function(error) {
-					sails.log("Error: getPresentations " + error.code + " " + error.message);
- 					res.view('500');
-				}
-			});
-		});
+ 	goto: function(req, res){
+ 		var presentationId = req.param('presentationId');
+ 		var presentations = Parse.Object.extend("Presentations");
+ 		var query = new Parse.Query(presentations);
+ 		query.get(presentationId, {
+ 			success: function(object) {
+ 				if(object.get('geolocation') != null ){
+ 					return res.view(null, {
+ 						latitudeDestination : object.get('geolocation').latitude,
+ 						longitudeDestination : object.get('geolocation').longitude
+ 					});
+ 				}else{
+ 					sails.log("Error: goto, maybe the location have no location defined yet " + error.code + " " + error.message);
+ 					res.view('500', {error : "Error: goto, maybe the location of the presentation is not defined yet " + error.code + " " + error.message});
+ 				}
+ 			},
+ 			error: function(object, error) {
+ 				sails.log("Error: getPresentations " + error.code + " " + error.message);
+ 				res.view('500', {error : "Error: presentation not found" + error.code + " " + error.message});
+ 			}
+ 		});
+ 	},
+
+ 	gotoCloudCode: function(req, res){
+ 		Parse.Cloud.run('goto', {}, {
+ 			success: function(object) {
+ 				if (object.get('geolocation') != null){
+ 					return res.view(null, {
+ 						latitudeDestination : object.get('geolocation').latitude,
+ 						longitudeDestination : object.get('geolocation').longitude
+ 					});
+ 				}else{
+ 					sails.log("Error: The presentation have no location defined yet " + error.code + " " + error.message);
+ 					res.view('500', {error : "Error: goto, maybe the location of the presentation is not defined yet " + error.code + " " + error.message});
+ 				}
+ 			},
+ 			error: function(error) {
+ 				sails.log("Error: goto, maybe the location have no location defined yet " + error.code + " " + error.message);
+ 				res.view('500', {error : "Error: presentation not found " + error.code + " " + error.message});
+ 			}
+ 		});
  	},
 
  	showPlanning: function(req, res){
  		Parse.Cloud.run('getPlanning', {}, {
  			success: function(results) {
- 				res.view(null,{
- 					presentations: results,
+ 				return res.view(null,{
+ 					presentations: results
  				});
  			},
  			error: function(error) {
  				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error: Planning not found " + error.code + " " + error.message});
  			}
  		});
  	},
 
- 	removePresentationNonCloudCode: function(req, res){
- 		var presentationId = req.param('presentationId');
-		var presentations = Parse.Object.extend("Presentations");
-		var query = new Parse.Query(presentations);
-		sails.log("LOG : " + presentationId);
-		query.get(presentationId, {
-			success: function(object) {
-				var presentation = object;
-				var user = Parse.User.current();
-				var relation = user.relation("selectedPrs");
-				relation.remove(presentation);
-				user.save(null, {
-					success: function(presentation) {
-						return res.redirect('/planning');
-					},		
-					error: function(presentation, error) {
-						sails.log("Error: getPresentations " + error.code + " " + error.message);
- 						res.view('500');
-					}
-				});
-			},
-			error: function(object, error) {
-				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');			}
-		});
- 	},
-
  	removePresentation: function(req, res){
- 		Parse.Cloud.run('removePresentation', {}, {
+ 		var presentationId = req.param('presentationId');
+ 		sails.log("On enlève l'id "+presentationId+" du planning.");
+ 		Parse.Cloud.run('removePresentation', {presentationId: presentationId}, {
  			success: function(results) {
  				return res.redirect('/planning');
  			},
  			error: function(error) {
  				sails.log("Error: removePresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error: Unable to remove presentation " + error.code + " " + error.message});
  			}
  		});
  	},
@@ -102,7 +104,7 @@
  			},
  			error: function(error) {
  				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error: Unable to suscribe to this presentation " + error.code + " " + error.message});
  			}
  		});
  	},
@@ -119,15 +121,15 @@
  			},
  			error: function(error) {
  				sails.log("Error: createPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error: unable to create the presentation " + error.code + " " + error.message});
  			}
  		});
  	},
 
  	create: function(req, res){
- 		 res.view('Presentations/create', {
- 		 	layout: 'Admin/admin'
- 		 })
+ 		res.view('Presentations/create', {
+ 			layout: 'Admin/admin'
+ 		})
  	},
 
  	edit: function(req, res){
@@ -140,7 +142,7 @@
  			},
  			error: function(error) {
  				sails.log("[Edit] Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				res.view('500', {error : "Error editing Presentation " + error.code + " " + error.message});
  			}
  		});
  	},
@@ -161,12 +163,12 @@
  				},
  				error: function(error) {
  					sails.log("[Edit] Error: updatePresentation " + error.code + " " + error.message);
- 					res.view('500');
+ 					res.view('500', {error : "Error: Unable to edit this post " + error.code + " " + error.message});
  				}
  			});
  		} else {
  			sails.log("editPost, it's not a json ...")
- 			res.view('500');
+ 			res.view('500', {error : "Error: editPost " + error.code + " " + error.message});
  		}		
  	}
 

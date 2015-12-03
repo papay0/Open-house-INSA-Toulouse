@@ -44,7 +44,7 @@
 
         <body>
 
-          <nav class="navbar navbar-default navbar-static-top">
+          <nav class="navbar navbar-default navbar-static-top" position="absolute">
             <div class="container">
               <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -57,21 +57,11 @@
               </div>
               <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                  <li><a href="/">Home</a></li>
-                  <li><a href="/admin">Admin</a></li>
-                  <li><a href="/register">Register</a></li>
-                  <li><a href="/loginuser">LoginUser</a></li>
                   <li><a href="/planning">ShowPlanning</a></li>
-                  <li class="dropdown ">
-                    <a href="/admin" class="dropdown-toggle" data-hover="dropdown" data-close-others="true">Admin</a>               
-                <ul class="dropdown-menu">
-                    <li><a href="/presentations/create">Create presentation</a></li>
-                    <li><a href="/">AAAA</a></li>
-                    <li><a href="/">BBBB</a></li>
-                    <li><a href="/">CCCC</a></li>
-                  </ul>
-                </li>
                   <li><a href="/login">LogIn</a></li>
+                  <li><a href="/register">Register</a></li>
+                  <li><a>|</a></li>
+                  <li><a href="/admin">Admin</a></li>
                   <li><a href="/presentations/create">Create presentation</a></li>
                   <li><a href="/presentations/edit">Edit presentation</a></li>
                 </ul>
@@ -84,7 +74,7 @@
 
           <%- body %>
 
-          <footer style="width:100%; height:100px; position:absolute; bottom:0; left:0;">
+          <!--<footer style="width:100%; height:100px; position:absolute; bottom:0; left:0;">
             <div class="container">
               <div class="row">
                 <div class="col-lg-10 col-lg-offset-1 text-center">
@@ -93,7 +83,7 @@
                 </div>
               </div>
             </div>
-          </footer>
+          </footer>-->
 
     <!--
         Client-side Templates

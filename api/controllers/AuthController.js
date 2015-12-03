@@ -16,10 +16,6 @@ module.exports = {
  		rest: false
  	},
 
- 	register:function(req, res) {
- 		res.view('Auth/register');
- 	},
-
  	registerUser:function(req, res) {
  		sails.log(req.param('email'));
  		var user = new Parse.User();
@@ -34,7 +30,7 @@ module.exports = {
 			},
 			error: function(user, error) {
 				sails.log("Error: register " + error.code + " " + error.message);
-				res.view('500');
+				res.view('500', {error : "Error: register " + error.code + " " + error.message});
 			}
 		});
 	},
@@ -44,41 +40,38 @@ module.exports = {
 		I think it's better to use Parse.User.logIn than cloud code function.
 		Because I think it's more secure. 
 		*/
-		
-		Parse.User.enableUnsafeCurrentUser();
-		var email = req.param('email');
-		var password = req.param('email');
-		Parse.User.logIn(email, password, {
-			success: function(user) {
-				return res.redirect('/');
-			},
-			error: function(user, error) {
-				res.send(error, 401);
-				sails.log("user: "+user+" error: "+error+" email: "+email)
-			}
-		});
-	},
 
-	loginUser:function(req, res) {
-		/*
-		I think it's better to use Parse.User.logIn than cloud code function.
-		Because I think it's more secure. 
-		*/
-		Parse.User.enableUnsafeCurrentUser();
-		var email = req.param('email');
-		var password = PASSWD;
-		Parse.User.logIn(email, password, {
-			success: function(user) {
-				return res.redirect('/');
-			},
-			error: function(user, error) {
-				res.send(error, 401);
-				sails.log("user: "+user+" error: "+error+" email: "+email)
-			}
-		});
+		sails.log(req.user);
+		sails.log(req.session.sid);
+		sails.log(sails.sid);
+		sails.log(req.session);
+		if (req.user == undefined){
+			Parse.User.enableUnsafeCurrentUser();
+			var email = req.param('email');
+			var password = req.param('email');
+			Parse.User.logIn(email, password, {
+				success: function(user) {
+					if(req.param('remember') == "ok"){
+						sails.log("On met le cookie pour se souvenir de l'user");
+						res.cookie('username', req.param('email'), { maxAge: 900000, httpOnly: true });
+					}else{
+						sails.log("On ne met pas de cookie");
+					}
+					sails.log(req.url);
+					return res.redirect(req.param('nextPage'));
+				},
+				error: function(user, error) {
+					res.view('500', {error : "Error: login " + error.code + " " + error.message});
+					sails.log("user: "+user+" error: "+error+" email: "+email)
+				}
+			});
+		}else{
+			return res.redirect('/');
+		}
 	},
 
 	logout: function(req, res) {
+		res.clearCookie('username');
 		try {
 			var currentUser = Parse.User.current();
 			if (currentUser) {

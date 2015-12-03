@@ -20,156 +20,140 @@
  * http://sailsjs.org/#!/documentation/concepts/Routes/RouteTargetSyntax.html
  */
 
-module.exports.routes = {
+ module.exports.routes = {
 
-  /***************************************************************************
-  *                                                                          *
-  * Make the view located at `views/homepage.ejs` (or `views/homepage.jade`, *
-  * etc. depending on your default view engine) your home page.              *
-  *                                                                          *
-  * (Alternatively, remove this and add an `index.html` file in your         *
-  * `assets` directory)                                                      *
-  *                                                                          *
-  ***************************************************************************/
-
-
-  /***************************************************************************
-  *                                                                          *
-  *                         Presentations                                    *
-  *                                                                          *
-  ***************************************************************************/
-  '/': {
-    controller: 'PresentationsController',
-    action: 'show'
-  },
- 
-  'get /presentations': {
-    controller: 'PresentationsController',
-    action: 'create'
-  },
-
-  'post /presentations/edit': {
-    controller: 'PresentationsController',
-    action: 'editPost'
-  },
-
-  /***************************************************************************
-  *                                                                          *
-  *                         Planning                                         *
-  *                                                                          *
-  ***************************************************************************/
- 
-  'get /planning': {
-    controller: 'PresentationsController',
-    action: 'showPlanning'
-  },
-
-  /***************************************************************************
-  *                                                                          *
-  *                              Admin                                       *
-  *                                                                          *
-  ***************************************************************************/
-
-  'get /admin': {
-    controller: 'AdminController',
-    action: 'Admin'
-  },
+    /***************************************************************************
+    *                                                                          *
+    * Make the view located at `views/homepage.ejs` (or `views/homepage.jade`, *
+    * etc. depending on your default view engine) your home page.              *
+    *                                                                          *
+    * (Alternatively, remove this and add an `index.html` file in your         *
+    * `assets` directory)                                                      *
+    *                                                                          *
+    ***************************************************************************/
 
 
- /***************************************************************************
-  *                                                                         *
-  *                              Register                                   *
-  *                                                                         *
-  ***************************************************************************/
+    /***************************************************************************
+    *                                                                          *
+    *                         Presentations                                    *
+    *                                                                          *
+    ***************************************************************************/
+    '/': {
+        controller: 'PresentationsController',
+        action: 'show'
+    },
 
-  'get /register': {
-    view: 'Auth/register',
-  },
+    'get /presentations': {
+        controller: 'PresentationsController',
+        action: 'create'
+    },
 
-  'post /register': {
-    controller: 'AuthController',
-    action: 'registerUser'
-  },
+    'post /presentations/edit': {
+        controller: 'PresentationsController',
+        action: 'editPost'
+    },
 
+    /***************************************************************************
+    *                                                                          *
+    *                         Planning                                         *
+    *                                                                          *
+    ***************************************************************************/
 
-  /***************************************************************************
-  *                                                                          *
-  *                              suscribePresentation                        *
-  *                                                                          *
-  ***************************************************************************/
+    'get /planning': {
+        controller: 'PresentationsController',
+        action: 'showPlanning'
+    },
 
-  'post /suscribePresentation': {
-    controller: 'PresentationsController',
-    action: 'suscribePresentation'
-  },
+    /***************************************************************************
+    *                                                                          *
+    *                              Admin                                       *
+    *                                                                          *
+    ***************************************************************************/
 
-
- /***************************************************************************
-  *                                                                          *
-  *                              LogIn                                       *
-  *                                                                          *
-  ***************************************************************************/
-
-  'get /loginAdmin': {
-    view: 'Auth/loginAdmin'
-  },
-
-  'get /login': {
-    view: 'Auth/login'
-  },
-
-  'post /login': {
-    controller: 'AuthController',
-    action: 'login'
-  },
-
-   /***************************************************************************
-  *                                                                           *
-  *                              LogIn    (?)                                 *
-  *                                                                           *
-  ***************************************************************************/
-
-  'get /loginuser': {
-    view: 'Auth/login'
-  },
-
-  'post /loginuser': {
-    controller: 'AuthController',
-    action: 'loginUser'
-  },
-
-   /***************************************************************************
-  *                                                                           *
-  *                              RemovePresentationFromPlanning    (?)                                 *
-  *                                                                           *
-  ***************************************************************************/
-
-  'post /removePresentation': {
-    controller: 'PresentationsController',
-    action: 'removePresentation'
-  },
-
- /***************************************************************************
-  *                                                                          *
-  *                              LogOut                                      *
-  *                                                                          *
-  ***************************************************************************/
-  'get /logout': {
-    controller: 'AuthController',
-    action: 'logout'
-  },
+    'get /admin': {
+        controller: 'AdminController',
+        action: 'Admin'
+    },
 
 
+    /***************************************************************************
+    *                                                                         *
+    *                              Register                                   *
+    *                                                                         *
+    ***************************************************************************/
+
+    'get /register': {
+        view: 'Auth/register',
+    },
+
+    'post /register': {
+        controller: 'AuthController',
+        action: 'registerUser'
+    },
 
 
-  /***************************************************************************
-  *                                                                          *
-  * Custom routes here...                                                    *
-  *                                                                          *
-  * If a request to a URL doesn't match any of the custom routes above, it   *
-  * is matched against Sails route blueprints. See `config/blueprints.js`    *
-  * for configuration options and examples.                                  *
-  *                                                                          *
-  ***************************************************************************/
+    /***************************************************************************
+    *                                                                          *
+    *                              suscribePresentation                        *
+    *                                                                          *
+    ***************************************************************************/
 
+    'post /suscribePresentation': {
+        controller: 'PresentationsController',
+        action: 'suscribePresentation'
+    },
+
+
+    /***************************************************************************
+    *                                                                          *
+    *                              LogIn                                       *
+    *                                                                          *
+    ***************************************************************************/
+
+    'get /loginAdmin': {
+        view: 'Auth/loginAdmin'
+    },
+
+    'get /login': {
+        view: 'Auth/login',
+        locals : {
+            nextPage : "/"
+        }
+    },
+
+    'post /login': {
+        controller: 'AuthController',
+        action: 'login'
+    },
+
+    /***************************************************************************
+    *                                                                           *
+    *                              RemovePresentationFromPlanning    (?)                                 *
+    *                                                                           *
+    ***************************************************************************/
+
+    'post /removePresentation': {
+        controller: 'PresentationsController',
+        action: 'removePresentation'
+    },
+
+    /***************************************************************************
+    *                                                                          *
+    *                              LogOut                                      *
+    *                                                                          *
+    ***************************************************************************/
+    'get /logout': {
+        controller: 'AuthController',
+        action: 'logout'
+    },
+
+    /***************************************************************************
+    *                                                                          *
+    * Custom routes here...                                                    *
+    *                                                                          *
+    * If a request to a URL doesn't match any of the custom routes above, it   *
+    * is matched against Sails route blueprints. See `config/blueprints.js`    *
+    * for configuration options and examples.                                  *
+    *                                                                          *
+    ***************************************************************************/
 };

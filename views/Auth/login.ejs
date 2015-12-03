@@ -9,10 +9,11 @@
     <div class="form-group"> 
       <div class="col-sm-offset-2 col-sm-10">
         <div class="checkbox">
-          <label><input type="checkbox"> Remember me</label>
+          <label><input type="checkbox" name="remember" value="ok"> Remember me</label>
         </div>
       </div>
     </div>
+    <input type="hidden" name="nextPage" value="<%= nextPage %>">
     <div class="form-group"> 
       <div class="col-sm-offset-2 col-sm-10">
         <button type="submit" class="btn btn-default">Login</button>
