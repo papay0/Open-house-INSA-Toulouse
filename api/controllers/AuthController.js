@@ -44,18 +44,28 @@ module.exports = {
 		I think it's better to use Parse.User.logIn than cloud code function.
 		Because I think it's more secure. 
 		*/
-		Parse.User.enableUnsafeCurrentUser();
-		var email = req.param('email');
-		var password = req.param('email');
-		Parse.User.logIn(email, password, {
-			success: function(user) {
-				return res.redirect('/');
-			},
-			error: function(user, error) {
-				res.send(error, 401);
-				sails.log("user: "+user+" error: "+error+" email: "+email)
-			}
-		});
+		if (req.user == undefined){
+			Parse.User.enableUnsafeCurrentUser();
+			var email = req.param('email');
+			var password = req.param('email');
+			Parse.User.logIn(email, password, {
+				success: function(user) {
+					if(req.param('remember') == "ok"){
+						sails.log("On met le cookie pour se souvenir de l'user");
+						res.cookie('username', req.param('email'), { maxAge: 900000, httpOnly: true });
+					}else{
+						sails.log("On ne met pas de cookie");
+					}
+					return res.redirect('/');
+				},
+				error: function(user, error) {
+					res.send(error, 401);
+					sails.log("user: "+user+" error: "+error+" email: "+email)
+				}
+			});
+		}else{
+			return res.redirect('/');
+		}
 	},
 
 	loginUser:function(req, res) {
@@ -78,6 +88,7 @@ module.exports = {
 	},
 
 	logout: function(req, res) {
+		res.clearCookie('username');
 		try {
 			var currentUser = Parse.User.current();
 			if (currentUser) {
