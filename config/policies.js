@@ -29,7 +29,8 @@ module.exports.policies = {
     'create': 'isAdmin',
     'createDisplayForm': 'isAdmin',
     'edit': 'isAdmin',
-    'suscribePresentation': 'isAuthenticated'
+    'suscribePresentation': 'isAuthenticated',
+    'showPlanning': 'isAuthenticated'
   },
 
 

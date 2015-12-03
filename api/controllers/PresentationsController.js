@@ -21,6 +21,37 @@
  		});
  	},
 
+ 	showPlanning: function(req, res){
+ 		Parse.User.current().fetch().then(function (user) {
+		    var query = user.relation("selectedPrs").query();
+		    query.find({
+				success: function(results) {
+					res.view(null, {
+						presentations: results
+					});
+				},
+				error: function(error) {
+					sails.log("Error: getPresentations " + error.code + " " + error.message);
+ 					res.view('500');
+				}
+			});
+		});
+ 	},
+
+ 	showPlanningCloudCode: function(req, res){
+ 		Parse.Cloud.run('getPlanning', {}, {
+ 			success: function(results) {
+ 				res.view(null,{
+ 					presentations: results,
+ 				});
+ 			},
+ 			error: function(error) {
+ 				sails.log("Error: getPresentations " + error.code + " " + error.message);
+ 				res.view('500');
+ 			}
+ 		});
+ 	},
+
  	suscribePresentation: function(req, res){
  		sails.log(req.param('presentationId'));
  		var presentationId = req.param('presentationId');
@@ -55,15 +86,15 @@
  	},
 
  	create: function(req, res){
- 		res.view('Presentation/create', {
- 			layout: 'Admin/admin'
- 		})
+ 		 res.view('Presentations/create', {
+ 		 	layout: 'Admin/admin'
+ 		 })
  	},
 
  	edit: function(req, res){
  		Parse.Cloud.run('getPresentations', {}, {
  			success: function(results) {
- 				res.view('Presentation/edit',{
+ 				res.view(null,{
  					presentations: results,
  					layout: 'Admin/admin'
  				});
