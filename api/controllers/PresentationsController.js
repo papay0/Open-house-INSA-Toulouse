@@ -80,7 +80,9 @@
  	},
 
  	removePresentation: function(req, res){
- 		Parse.Cloud.run('removePresentation', {}, {
+ 		var presentationId = req.param('presentationId');
+ 		sails.log("On enlève l'id "+presentationId+" du planning.");
+ 		Parse.Cloud.run('removePresentation', {presentationId: presentationId}, {
  			success: function(results) {
  				return res.redirect('/planning');
  			},

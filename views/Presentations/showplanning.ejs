@@ -35,13 +35,10 @@
     <% })%>
 
     $('.suscribeButton').click(function(){
-      alert($(this).attr('id'));
       var divAffichage = $(this);
       if (divAffichage.text() == "Supprimer de mon planning"){
-        alert('remove');
         remove(divAffichage);
       }else{
-        alert('restore');
         restore(divAffichage);
       }
     });
@@ -52,7 +49,7 @@
       $.ajax({
          url : '/removePresentation',
          type : 'POST',
-         data : 'presentationId=' + $(this).attr('id'),
+         data : 'presentationId=' + divAffichage.attr('id'),
          dataType : 'html',
          success : function(code_html, statut){
             divAffichage.text("Restaurer dans le planning !");
@@ -71,7 +68,7 @@
       $.ajax({
          url : '/suscribePresentation',
          type : 'POST',
-         data : 'presentationId=' + $(this).attr('id'),
+         data : 'presentationId=' + divAffichage.attr('id'),
          dataType : 'html',
          success : function(code_html, statut){
             divAffichage.text("Remis dans le planning !");
