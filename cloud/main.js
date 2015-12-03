@@ -95,7 +95,7 @@ Parse.Cloud.define("updatePresentation", function(request, response) {
 					console.log('start: '+start);
 					object.save(null, {
 						success: function(presentation) {
-							response.success("Presentation updated: "+presentation);
+							response.success(presentation);
 						},		
 						error: function(presentation, error) {
 							response.error("Failed to update presentation Object in Parse database: "+error.message);

@@ -116,7 +116,9 @@
  			Parse.Cloud.run('updatePresentation', {name: name, id: id, start: start, end: end}, {
  				success: function(results) {
  					sails.log("success to edit presentation, results: "+results);
- 					res.json();
+ 					//return res.redirect('/presentations/edit');
+ 					sails.log(results);
+ 					return res.json(results);
  				},
  				error: function(error) {
  					sails.log("[Edit] Error: updatePresentation " + error.code + " " + error.message);

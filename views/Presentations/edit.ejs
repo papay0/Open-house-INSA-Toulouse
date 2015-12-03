@@ -153,14 +153,15 @@ $('#save').click(function(){
         data: JSON.stringify(data),
         contentType: "application/json; charset=UTF-8",
         success: function(data) {
-
-          alert(data); 
+          console.log("success AJAX: "+JSON.stringify(data));
+          alert(data.name); 
         },
         error: function(error) {
-         // alert('La requête n\'a pas abouti, error: '+error.message+" error code: "+error.code); 
-        }
-      });
-      setTimeout(function () { location.reload(true); }, 1000);
+          console.log("I'm in error ajax");
+          alert('La requête n\'a pas abouti, error: '+error.message+" error code: "+error.code); 
+       }
+     });
+      //setTimeout(function () { location.reload(true); }, 1000);
     });
 
 function fillPage(id, name, start, end){
