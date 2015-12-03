@@ -55,9 +55,9 @@
  	},
 
  	create: function(req, res){
- 		 res.view('Presentation/create', {
- 		 	layout: 'Admin/admin'
- 		 })
+ 		res.view('Presentation/create', {
+ 			layout: 'Admin/admin'
+ 		})
  	},
 
  	edit: function(req, res){
@@ -73,6 +73,29 @@
  				res.view('500');
  			}
  		});
+ 	},
+
+ 	editPost: function(req,res){
+ 		if (req.wantsJSON){
+ 			var name = req.param('name');
+ 			var start = req.param('start');
+ 			var end = req.param('end');
+ 			var id = req.param('id');
+ 			sails.log("Params: name: "+name+" id: "+req.param('id'));
+ 			Parse.Cloud.run('updatePresentation', {name: name, id: id, start: start, end: end}, {
+ 				success: function(results) {
+ 					sails.log("success to edit presentation, results: "+results);
+ 					res.json();
+ 				},
+ 				error: function(error) {
+ 					sails.log("[Edit] Error: updatePresentation " + error.code + " " + error.message);
+ 					res.view('500');
+ 				}
+ 			});
+ 		} else {
+ 			sails.log("editPost, it's not a json ...")
+ 			res.view('500');
+ 		}		
  	}
 
  };

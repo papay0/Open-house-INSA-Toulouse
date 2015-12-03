@@ -48,6 +48,11 @@ module.exports.routes = {
     action: 'create'
   },
 
+  'post /presentations/edit': {
+    controller: 'PresentationsController',
+    action: 'editPost'
+  },
+
   /***************************************************************************
   *                                                                          *
   *                              Admin                                       *
