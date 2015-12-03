@@ -21,62 +21,59 @@
  		});
  	},
 
- 	showPlanningNonCloudCode: function(req, res){
- 		Parse.User.current().fetch().then(function (user) {
-		    var query = user.relation("selectedPrs").query();
-		    query.find({
-				success: function(results) {
-					res.view(null, {
-						presentations: results
-					});
-				},
-				error: function(error) {
-					sails.log("Error: getPresentations " + error.code + " " + error.message);
- 					res.view('500');
-				}
-			});
+ 	goto: function(req, res){
+ 		var presentationId = req.param('presentationId');
+ 		var presentations = Parse.Object.extend("Presentations");
+		var query = new Parse.Query(presentations);
+		query.get(presentationId, {
+			success: function(object) {
+				if(object.get('geolocation') != null ){
+				return res.view(null, {
+					latitudeDestination : object.get('geolocation').latitude,
+					longitudeDestination : object.get('geolocation').longitude
+				});
+			}else{sails.log("Error: goto, maybe the location have no location defined yet " + error.code + " " + error.message);
+ 				return res.view('500');}
+			},
+			error: function(object, error) {
+				sails.log("Error: getPresentations " + error.code + " " + error.message);
+ 				return res.view('500');
+			}
 		});
+ 	},
+
+ 	gotoCloudCode: function(req, res){
+ 		Parse.Cloud.run('goto', {}, {
+ 			success: function(object) {
+ 				if (object.get('geolocation') != null){
+	 				return res.view(null, {
+						latitudeDestination : object.get('geolocation').latitude,
+						longitudeDestination : object.get('geolocation').longitude
+					});
+	 			}else{
+	 				sails.log("Error: The presentation have no location defined yet " + error.code + " " + error.message);
+ 					return res.view('500');
+	 			}
+ 			},
+ 			error: function(error) {
+ 				sails.log("Error: goto, maybe the location have no location defined yet " + error.code + " " + error.message);
+ 				return res.view('500');
+ 			}
+ 		});
  	},
 
  	showPlanning: function(req, res){
  		Parse.Cloud.run('getPlanning', {}, {
  			success: function(results) {
- 				res.view(null,{
- 					presentations: results,
+ 				return res.view(null,{
+ 					presentations: results
  				});
  			},
  			error: function(error) {
  				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				return res.view('500');
  			}
  		});
- 	},
-
- 	removePresentationNonCloudCode: function(req, res){
- 		var presentationId = req.param('presentationId');
-		var presentations = Parse.Object.extend("Presentations");
-		var query = new Parse.Query(presentations);
-		sails.log("LOG : " + presentationId);
-		query.get(presentationId, {
-			success: function(object) {
-				var presentation = object;
-				var user = Parse.User.current();
-				var relation = user.relation("selectedPrs");
-				relation.remove(presentation);
-				user.save(null, {
-					success: function(presentation) {
-						return res.redirect('/planning');
-					},		
-					error: function(presentation, error) {
-						sails.log("Error: getPresentations " + error.code + " " + error.message);
- 						res.view('500');
-					}
-				});
-			},
-			error: function(object, error) {
-				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500');			}
-		});
  	},
 
  	removePresentation: function(req, res){
@@ -88,7 +85,7 @@
  			},
  			error: function(error) {
  				sails.log("Error: removePresentations " + error.code + " " + error.message);
- 				res.view('500');
+ 				return res.view('500');
  			}
  		});
  	},

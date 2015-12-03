@@ -22,6 +22,22 @@ Parse.Cloud.define("logOut", function(request, response){
 	}
 });
 
+Parse.Cloud.define("goto", function(req, res){
+	if(req.user){
+		var presentationId = req.params.presentationId;
+		var presentations = Parse.Object.extend("Presentations");
+		var query = new Parse.Query(presentations);
+		query.get(presentationId, {
+			success: function(object) {
+				res.success(results);
+			},
+			error: function(object, error) {
+				res.error("Erreur dans la recherche de la localisation de la présentation " + error);
+			}
+		});
+	}
+}),
+
 Parse.Cloud.define("getPlanning", function(req, res){
 	if(req.user){
 		Parse.User.current().fetch().then(function (user) {
@@ -31,14 +47,14 @@ Parse.Cloud.define("getPlanning", function(req, res){
 					res.success(results);
 				},
 				error: function(error) {
-					res.error(error);
+					res.error("Erreur dans la recherche du planning " + error);
 				}
 			});
 		});
 	}else{
-		response.error("You are not logged in "+error.message);
+		res.error("You are not logged in "+error.message);
 	}
-});
+}),
 
 Parse.Cloud.define("suscribePresentation", function(request, response){
 	if (request.user){

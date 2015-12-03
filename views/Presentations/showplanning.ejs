@@ -1,85 +1,91 @@
 <div class="container">
-  <h1> INSA Toulouse </h1>
-  <h2>INSA JPO</h2>
-  <p>Veuillez selectionner les présentations. </p>            
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Start</th>
-        <th>End</th>
-      </tr>
-    </thead>
-    <tbody>
-        <% _.each(presentations, function (presentation) { %>
-      <tr>
-        <td><%= presentation.get('name') %></td>
-        <td id="start<%= presentation.id %>"></td>
-        <td id="end<%= presentation.id %>"></td>
-        <td>
-          <button id="<%= presentation.id %>" class="suscribeButton btn btn-primary">Supprimer de mon planning</button>
-        </td>
-      </tr>
-      <% })%>
-    </tbody>
-  </table>
+	<h1> INSA Toulouse </h1>
+	<h2>INSA JPO</h2>
+	<p>Veuillez selectionner les présentations. </p>            
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Start</th>
+				<th>End</th>
+			</tr>
+		</thead>
+		<tbody>
+				<% _.each(presentations, function (presentation) { %>
+			<tr>
+				<td><%= presentation.get('name') %></td>
+				<td id="start<%= presentation.id %>"></td>
+				<td id="end<%= presentation.id %>"></td>
+				<td>
+					<button id="<%= presentation.id %>" class="suscribeButton btn btn-primary">Supprimer de mon planning</button>
+				</td>
+				<td>
+					<form action="presentations/goto" method="POST">
+						<input type="hidden" name="presentationId" value="<%= presentation.id %>" />
+						<input type="submit" value="goto" class="btn btn-primary">
+					</form>
+				</td>
+			</tr>
+			<% })%>
+		</tbody>
+	</table>
 </div>
 
 <script type="text/javascript">
-  $(function () {
-    <% _.each(presentations, function (presentation) { %>
-      var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
-      $("#start<%= presentation.id %>").text(start);
-      var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
-      $("#end<%= presentation.id %>").text(end);      
-    <% })%>
+	$(function () {
+		<% _.each(presentations, function (presentation) { %>
+			var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
+			$("#start<%= presentation.id %>").text(start);
+			var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
+			$("#end<%= presentation.id %>").text(end);      
+		<% })%>
 
-    $('.suscribeButton').click(function(){
-      var divAffichage = $(this);
-      if (divAffichage.text() == "Supprimer de mon planning"){
-        remove(divAffichage);
-      }else{
-        restore(divAffichage);
-      }
-    });
+		$('.suscribeButton').click(function(){
+			var divAffichage = $(this);
+			if (divAffichage.text() == "Supprimer de mon planning"){
+				remove(divAffichage);
+			}else{
+				restore(divAffichage);
+			}
+		});
 
-    function remove(divAffichage){
-      divAffichage.text("Suppression");
-      divAffichage.attr("class", "btn btn-info");
-      $.ajax({
-         url : '/removePresentation',
-         type : 'POST',
-         data : 'presentationId=' + divAffichage.attr('id'),
-         dataType : 'html',
-         success : function(code_html, statut){
-            divAffichage.text("Restaurer dans le planning !");
-            divAffichage.attr("class", "btn btn-success cancelRemove");
-         },
-         error : function(resultat, statut, erreur){
-           divAffichage.text("Erreur " + erreur);
-           divAffichage.attr("class", "btn btn-danger");
-         },
-      });
-    }
+		function remove(divAffichage){
+			divAffichage.text("Suppression");
+			divAffichage.attr("class", "btn btn-info");
+			$.ajax({
+				 url : '/removePresentation',
+				 type : 'POST',
+				 data : 'presentationId=' + divAffichage.attr('id'),
+				 dataType : 'html',
+				 success : function(code_html, statut){
+						divAffichage.text("Restaurer dans le planning !");
+						divAffichage.attr("class", "btn btn-success cancelRemove");
+				 },
+				 error : function(resultat, statut, erreur){
+					 divAffichage.text("Erreur " + erreur);
+					 divAffichage.attr("class", "btn btn-danger");
+				 },
+			});
+		}
 
-    function restore(divAffichage){
-      divAffichage.text("Rajout");
-      divAffichage.attr("class", "btn btn-info");
-      $.ajax({
-         url : '/suscribePresentation',
-         type : 'POST',
-         data : 'presentationId=' + divAffichage.attr('id'),
-         dataType : 'html',
-         success : function(code_html, statut){
-            divAffichage.text("Remis dans le planning !");
-            divAffichage.attr("class", "btn btn-success suscribeButton");
-         },
-         error : function(resultat, statut, erreur){
-           divAffichage.text("Erreur " + erreur);
-           divAffichage.attr("class", "btn btn-danger");
-         },
-      });
-    }
+		function restore(divAffichage){
+			divAffichage.text("Rajout");
+			divAffichage.attr("class", "btn btn-info");
+			$.ajax({
+				 url : '/suscribePresentation',
+				 type : 'POST',
+				 data : 'presentationId=' + divAffichage.attr('id'),
+				 dataType : 'html',
+				 success : function(code_html, statut){
+						divAffichage.text("Remis dans le planning !");
+						divAffichage.attr("class", "btn btn-success suscribeButton");
+				 },
+				 error : function(resultat, statut, erreur){
+					 divAffichage.text("Erreur " + erreur);
+					 divAffichage.attr("class", "btn btn-danger");
+				 },
+			});
+		}
 
-  });
+	});
 </script>
