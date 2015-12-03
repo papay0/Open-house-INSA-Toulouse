@@ -34,8 +34,7 @@
  						longitudeDestination : object.get('geolocation').longitude
  					});
  				}else{
- 					sails.log("Error: goto, maybe the location have no location defined yet " + error.code + " " + error.message);
- 					res.view('500', {error : "Error: goto, maybe the location of the presentation is not defined yet " + error.code + " " + error.message});
+ 					res.view('500', {error : "Error: goto, maybe the location of the presentation is not defined yet "});
  				}
  			},
  			error: function(object, error) {
