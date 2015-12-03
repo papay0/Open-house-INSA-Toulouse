@@ -28,10 +28,10 @@ Parse.Cloud.define("getPlanning", function(req, res){
 			var query = user.relation("selectedPrs").query();
 		    query.find({
 				success: function(results) {
-					response.success(results);
+					res.success(results);
 				},
 				error: function(error) {
-					response.error(error);
+					res.error(error);
 				}
 			});
 		});

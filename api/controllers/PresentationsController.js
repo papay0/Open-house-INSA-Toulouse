@@ -21,7 +21,7 @@
  		});
  	},
 
- 	showPlanning: function(req, res){
+ 	showPlanningNonCloudCode: function(req, res){
  		Parse.User.current().fetch().then(function (user) {
 		    var query = user.relation("selectedPrs").query();
 		    query.find({
@@ -38,7 +38,7 @@
 		});
  	},
 
- 	showPlanningCloudCode: function(req, res){
+ 	showPlanning: function(req, res){
  		Parse.Cloud.run('getPlanning', {}, {
  			success: function(results) {
  				res.view(null,{
@@ -52,7 +52,7 @@
  		});
  	},
 
- 	removePresentation: function(req, res){
+ 	removePresentationNonCloudCode: function(req, res){
  		var presentationId = req.param('presentationId');
 		var presentations = Parse.Object.extend("Presentations");
 		var query = new Parse.Query(presentations);
@@ -79,7 +79,7 @@
 		});
  	},
 
- 	removePresentationCloudCode: function(req, res){
+ 	removePresentation: function(req, res){
  		Parse.Cloud.run('removePresentation', {}, {
  			success: function(results) {
  				return res.redirect('/planning');

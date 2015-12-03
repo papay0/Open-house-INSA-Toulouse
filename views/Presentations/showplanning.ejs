@@ -37,6 +37,16 @@
     $('.suscribeButton').click(function(){
       alert($(this).attr('id'));
       var divAffichage = $(this);
+      if (divAffichage.text() == "Supprimer de mon planning"){
+        alert('remove');
+        remove(divAffichage);
+      }else{
+        alert('restore');
+        restore(divAffichage);
+      }
+    });
+
+    function remove(divAffichage){
       divAffichage.text("Suppression");
       divAffichage.attr("class", "btn btn-info");
       $.ajax({
@@ -45,15 +55,34 @@
          data : 'presentationId=' + $(this).attr('id'),
          dataType : 'html',
          success : function(code_html, statut){
-            divAffichage.text("Supprimé du planning !");
-            divAffichage.attr("class", "btn btn-success");
+            divAffichage.text("Restaurer dans le planning !");
+            divAffichage.attr("class", "btn btn-success cancelRemove");
          },
          error : function(resultat, statut, erreur){
            divAffichage.text("Erreur " + erreur);
            divAffichage.attr("class", "btn btn-danger");
          },
       });
-    });
-  });
+    }
 
+    function restore(divAffichage){
+      divAffichage.text("Rajout");
+      divAffichage.attr("class", "btn btn-info");
+      $.ajax({
+         url : '/suscribePresentation',
+         type : 'POST',
+         data : 'presentationId=' + $(this).attr('id'),
+         dataType : 'html',
+         success : function(code_html, statut){
+            divAffichage.text("Remis dans le planning !");
+            divAffichage.attr("class", "btn btn-success suscribeButton");
+         },
+         error : function(resultat, statut, erreur){
+           divAffichage.text("Erreur " + erreur);
+           divAffichage.attr("class", "btn btn-danger");
+         },
+      });
+    }
+
+  });
 </script>
