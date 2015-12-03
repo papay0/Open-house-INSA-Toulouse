@@ -138,6 +138,16 @@ module.exports.routes = {
     action: 'loginUser'
   },
 
+   /***************************************************************************
+  *                                                                           *
+  *                              RemovePresentationFromPlanning    (?)                                 *
+  *                                                                           *
+  ***************************************************************************/
+
+  'post /removePresentation': {
+    controller: 'PresentationsController',
+    action: 'removePresentation'
+  },
 
  /***************************************************************************
   *                                                                          *

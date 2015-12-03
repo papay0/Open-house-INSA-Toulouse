@@ -17,25 +17,13 @@
         <td id="start<%= presentation.id %>"></td>
         <td id="end<%= presentation.id %>"></td>
         <td>
-          <button id="<%= presentation.id %>" class="suscribeButton btn-primary">Ajouter à mon planning</button>
+          <button id="<%= presentation.id %>" class="suscribeButton btn btn-primary">Ajouter à mon planning</button>
         </td>
       </tr>
       <% })%>
     </tbody>
   </table>
 </div>
-
-<style>
-  .enCours{
-    color : #FFC107;
-  }
-  .done{
-    color : #4CAF50;
-  }
-  .erreur{
-    color : #F44336;
-  }
-</style>
 
 <script type="text/javascript">
   $(function () {
@@ -49,7 +37,7 @@
     $('.suscribeButton').click(function(){
       var divAffichage = $(this);
       divAffichage.text("Ajout");
-      divAffichage.attr("class", "btn-info");
+      divAffichage.attr("class", "btn btn-info");
       $.ajax({
          url : '/suscribePresentation',
          type : 'POST',
@@ -57,11 +45,11 @@
          dataType : 'html',
          success : function(code_html, statut){
             divAffichage.text("Ajouté au planning !");
-            divAffichage.attr("class", "btn-success");
+            divAffichage.attr("class", "btn btn-success");
          },
          error : function(resultat, statut, erreur){
            divAffichage.text("Erreur : " + erreur);
-           divAffichage.attr("class", "btn-danger");
+           divAffichage.attr("class", "btn btn-danger");
          },
       });
     });
