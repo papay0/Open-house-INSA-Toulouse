@@ -47,14 +47,14 @@
                 <div class="form-group">
                   <label class="col-md-4 control-label" for="name">Name</label>  
                   <div class="col-md-4">
-                    <input id="name" name="name" type="text" placeholder="placeholder" class="form-control input-md" value="myValue1">
+                    <input autocomplete='off' id="name" name="name" type="text" placeholder="placeholder" class="form-control input-md" value="" >
                   </div>
                 </div>
                 <!-- Text input-->
                 <div class="form-group">
                   <label class="col-md-4 control-label" for="start">Start</label>  
                   <div class="col-md-4">
-                    <input id="start" name="start" type="text" placeholder="placeholder" class="form-control input-md" >
+                    <input id="start" name="start" type="text" placeholder="placeholder" class="form-control input-md" value="">
 
                   </div>
                 </div>
@@ -62,7 +62,7 @@
                 <div class="form-group">
                   <label class="col-md-4 control-label" for="end">End</label>  
                   <div class="col-md-4">
-                    <input id="end" name="end" type="text" placeholder="placeholder" class="form-control input-md">
+                    <input id="end" name="end" type="text" placeholder="placeholder" class="form-control input-md" value="">
 
                   </div>
                 </div>
@@ -128,6 +128,10 @@
     //         return false;
     //     });
 
+$('.modal').on('hidden.bs.modal', function(){
+    $(this).find('form')[0].reset();
+});
+
 $('#save').click(function(){
       var id = $('[name="saveCloseButton"]').attr('id');
       //alert(id);
@@ -141,11 +145,13 @@ $('#save').click(function(){
         url: '/presentations/edit',
         timeout: 10000,
         dataType: 'json',
+        cache: false,
         data: JSON.stringify(data),
         contentType: "application/json; charset=UTF-8",
         success: function(data) {
           console.log("success AJAX: "+JSON.stringify(data));
-          alert(data.name); 
+          fillPage(id, name, start, end);
+          //alert(data.name); 
         },
         error: function(error) {
           console.log("I'm in error ajax");
@@ -159,16 +165,17 @@ function fillPage(id, name, start, end){
   var name = $('#name'+id).text(name);
   var start = $("#start"+id).text(start);
   var end = $("#end"+id).text(end);
-
 }
 
 function fillModal(id, name, start, end){
+  //alert("Name "+name);
   var lineName = $('.col-md-4 #name');
   var lineStart = $('.col-md-4 #start');
   var lineEnd = $('.col-md-4 #end');
   lineName.attr('value', name);
   lineStart.attr('value', start);
   lineEnd.attr('value', end);
+  alert("Sur ma ligne dans mon modal il y a "+lineName.attr('value'));
   $('[name="saveCloseButton"]').attr('id', id);
 }
 
