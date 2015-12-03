@@ -38,7 +38,7 @@ Parse.Cloud.define("getPlanning", function(req, res){
 	}else{
 		response.error("You are not logged in "+error.message);
 	}
-}),
+});
 
 Parse.Cloud.define("suscribePresentation", function(request, response){
 	if (request.user){
@@ -61,6 +61,35 @@ Parse.Cloud.define("suscribePresentation", function(request, response){
 			},
 			error: function(object, error) {
 				response.error("Failed to fin presentation Object with ID in Parse database: "+request.params.presentationID+"  &&   "+error.message);
+			}
+		});
+	} else {
+		response.error("You are not logged in "+error.message);
+	}
+});
+
+Parse.Cloud.define("removePresentation", function(request, response){
+	if (request.user){
+		var presentationId = request.params.presentationId;
+		var presentations = Parse.Object.extend("Presentations");
+		var query = new Parse.Query(presentations);
+		query.get(presentationId, {
+			success: function(object) {
+				var presentation = object;
+				var user = Parse.User.current();
+				var relation = user.relation("selectedPrs");
+				relation.remove(presentation);
+				user.save(null, {
+					success: function(presentation) {
+						response.success(" Presentation unsuscribed ");
+					},		
+					error: function(presentation, error) {
+						response.error("Failed to delete presentation Object in Parse database: "+error.message);
+					}
+				});
+			},
+			error: function(object, error) {
+				response.error("Failed to find presentation Object in Parse database: "+error.message);
 			}
 		});
 	} else {

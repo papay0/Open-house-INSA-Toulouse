@@ -52,6 +52,45 @@
  		});
  	},
 
+ 	removePresentation: function(req, res){
+ 		var presentationId = req.param('presentationId');
+		var presentations = Parse.Object.extend("Presentations");
+		var query = new Parse.Query(presentations);
+		sails.log("LOG : " + presentationId);
+		query.get(presentationId, {
+			success: function(object) {
+				var presentation = object;
+				var user = Parse.User.current();
+				var relation = user.relation("selectedPrs");
+				relation.remove(presentation);
+				user.save(null, {
+					success: function(presentation) {
+						return res.redirect('/planning');
+					},		
+					error: function(presentation, error) {
+						sails.log("Error: getPresentations " + error.code + " " + error.message);
+ 						res.view('500');
+					}
+				});
+			},
+			error: function(object, error) {
+				sails.log("Error: getPresentations " + error.code + " " + error.message);
+ 				res.view('500');			}
+		});
+ 	},
+
+ 	removePresentationCloudCode: function(req, res){
+ 		Parse.Cloud.run('removePresentation', {}, {
+ 			success: function(results) {
+ 				return res.redirect('/planning');
+ 			},
+ 			error: function(error) {
+ 				sails.log("Error: removePresentations " + error.code + " " + error.message);
+ 				res.view('500');
+ 			}
+ 		});
+ 	},
+
  	suscribePresentation: function(req, res){
  		sails.log(req.param('presentationId'));
  		var presentationId = req.param('presentationId');
