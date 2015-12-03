@@ -151,7 +151,7 @@
  			var start = req.param('start');
  			var end = req.param('end');
  			var id = req.param('id');
- 			sails.log("Params: name: "+name+" id: "+req.param('id'));
+ 			sails.log("Params: name: "+name+" id: "+id+" start: "+ start+" end: "+end);
  			Parse.Cloud.run('updatePresentation', {name: name, id: id, start: start, end: end}, {
  				success: function(results) {
  					sails.log("success to edit presentation, results: "+results);

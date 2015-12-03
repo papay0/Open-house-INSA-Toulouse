@@ -66,20 +66,11 @@
 
                   </div>
                 </div>
-                <!-- Button (Double) -->
-                <div id="" class="form-group" name="saveCancelButton">
-                  <label class="col-md-4 control-label" for="button1id"> </label>
-                  <div class="col-md-8">
-                    <!-- <button id="save" name="button1id" class="btn btn-success">Save</button> -->
-                    <button id="cancel" name="button2id" class="btn btn-danger">Cancel</button>
-                  </div>
-                </div>
-
               </fieldset>
             </form>
             <p>Some text in the modal.</p>
           </div>
-          <div class="modal-footer">
+          <div id="" class="modal-footer" name="saveCloseButton">
             <button id="save" name="button1id" data-dismiss="modal" class="btn btn-success">Save</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
@@ -138,7 +129,7 @@
     //     });
 
 $('#save').click(function(){
-  var id = $('[name="saveCancelButton"]').attr('id');
+      var id = $('[name="saveCloseButton"]').attr('id');
       //alert(id);
       var name = $('.col-md-4 #name').val();
       //alert(name)
@@ -178,7 +169,7 @@ function fillModal(id, name, start, end){
   lineName.attr('value', name);
   lineStart.attr('value', start);
   lineEnd.attr('value', end);
-  $('[name="saveCancelButton"]').attr('id', id);
+  $('[name="saveCloseButton"]').attr('id', id);
 }
 
 
