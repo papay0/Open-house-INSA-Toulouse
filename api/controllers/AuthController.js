@@ -22,8 +22,6 @@ module.exports = {
 
  	registerUser:function(req, res) {
  		sails.log(req.param('email'));
- 		sails.log(Parse.User.current().getUsername());
- 		sails.log(Parse.User.getUsername());
  		var user = new Parse.User();
 		user.set("username", req.param('email'));
 		user.set("password", req.param('email'));

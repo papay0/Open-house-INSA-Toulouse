@@ -1,0 +1,40 @@
+<div class="container">
+  <h1> INSA Toulouse </h1>
+  <h2>INSA JPO</h2>
+  <p>Veuillez selectionner les présentations. </p>            
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Start</th>
+        <th>End</th>
+      </tr>
+    </thead>
+    <tbody>
+      	<% _.each(presentations, function (presentation) { %>
+      <tr>
+        <td><%= presentation.get('name') %></td>
+        <td id="start<%= presentation.id %>"></td>
+        <td id="end<%= presentation.id %>"></td>
+        <td>
+          <form action="/unsuscribePresentation" method="POST">
+            <input type="hidden" name="presentationId" value="<%= presentation.id %>" />
+            <input type="submit" value="Supprimer" class="btn btn-primary" />
+          </form>
+        </td>
+      </tr>
+      <% })%>
+    </tbody>
+  </table>
+</div>
+
+<script type="text/javascript">
+  $(function () {
+    <% _.each(presentations, function (presentation) { %>
+      var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
+      $("#start<%= presentation.id %>").text(start);
+      var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
+      $("#end<%= presentation.id %>").text(end);      
+    <% })%>
+  });
+</script>
