@@ -29,7 +29,7 @@ Parse.Cloud.define("goto", function(req, res){
 		var query = new Parse.Query(presentations);
 		query.get(presentationId, {
 			success: function(object) {
-				res.success(results);
+				res.success(object);
 			},
 			error: function(object, error) {
 				res.error("Erreur dans la recherche de la localisation de la présentation " + error);

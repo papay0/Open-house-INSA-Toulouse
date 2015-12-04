@@ -17,16 +17,28 @@ module.exports = {
  	},
 
  	registerUser:function(req, res) {
- 		sails.log(req.param('email'));
+ 		var mail = req.param('email');
+ 		sails.log("ajout de l'utilisateur " + mail);
  		var user = new Parse.User();
-		user.set("username", req.param('email'));
-		user.set("password", req.param('email'));
+		user.set("username", mail);
+		user.set("password", mail);
 		//user.set("email", req.param('email'));
 		user.set("admin", false);
 
 		user.signUp(null, {
 			success: function(user) {
-				return res.redirect('/');
+				// @TODO : Mettre dans le cloud code ??
+				Parse.User.enableUnsafeCurrentUser();
+				Parse.User.logIn(mail, mail, {
+					//Après avoir réussi l'inscription, on connecte automatiquement l'User
+					success: function(user) {
+						return res.redirect('/');
+					},
+					error: function(user, error) {
+						res.view('500', {error : "Error: login " + error.code + " " + error.message});
+						sails.log("user: "+user+" error: "+error+" email: "+email)
+					}
+				});
 			},
 			error: function(user, error) {
 				sails.log("Error: register " + error.code + " " + error.message);
