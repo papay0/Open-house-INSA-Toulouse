@@ -156,4 +156,7 @@
     * for configuration options and examples.                                  *
     *                                                                          *
     ***************************************************************************/
+    'get /api/comments': {
+
+    }
 };

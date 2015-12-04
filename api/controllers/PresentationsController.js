@@ -170,6 +170,11 @@
  			sails.log("editPost, it's not a json ...")
  			res.view('500', {error : "Error: editPost " + error.code + " " + error.message});
  		}		
+ 	},
+
+ 	todo: function(req, res){
+ 		sails.log("I'm in todo");
+ 		res.view({layout: 'Admin/admin'});
  	}
 
  };
