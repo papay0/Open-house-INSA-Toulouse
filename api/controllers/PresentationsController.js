@@ -22,6 +22,7 @@
  		});
  	},
 
+ 	//TODELETE
  	gotoNotCloudCode: function(req, res){
  		var presentationId = req.param('presentationId');
  		var presentations = Parse.Object.extend("Presentations");
@@ -30,8 +31,8 @@
  			success: function(object) {
  				if(object.get('geolocation') != null ){
  					return res.view(null, {
- 						latitudeDestination : object.get('geolocation').latitude,
- 						longitudeDestination : object.get('geolocation').longitude
+ 						latitudeDestination : object.get('location').latitude,
+ 						longitudeDestination : object.get('location').longitude
  					});
  				}else{
  					res.view('500', {error : "Error: goto, maybe the location of the presentation is not defined yet "});
@@ -48,10 +49,10 @@
  		var presentationId = req.param('presentationId');
  		Parse.Cloud.run('goto', {presentationId: presentationId}, {
  			success: function(object) {
- 				if (object.get('geolocation') != null){
+ 				if (object.get('location') != null){
  					return res.view(null, {
- 						latitudeDestination : object.get('geolocation').latitude,
- 						longitudeDestination : object.get('geolocation').longitude
+ 						latitudeDestination : object.get('location').latitude,
+ 						longitudeDestination : object.get('location').longitude
  					});
  				}else{
  					sails.log("Error: The presentation have no location defined yet " + error.code + " " + error.message);
@@ -59,7 +60,7 @@
  				}
  			},
  			error: function(error) {
- 				sails.log("Error: goto, maybe the location have no location defined yet " + error.code + " " + error.message);
+ 				sails.log("Error: goto, presentation not found " + error.code + " " + error.message);
  				res.view('500', {error : "Error: presentation not found " + error.code + " " + error.message});
  			}
  		});
