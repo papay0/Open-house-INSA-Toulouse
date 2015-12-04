@@ -155,7 +155,7 @@ $('#save').click(function(){
         },
         error: function(error) {
           console.log("I'm in error ajax");
-          alert('La requête n\'a pas abouti, error: '+error.message+" error code: "+error.code); 
+          //alert('La requête n\'a pas abouti, error: '+error.message+" error code: "+error.code); 
        }
      });
       //setTimeout(function () { location.reload(true); }, 1000);
@@ -175,7 +175,7 @@ function fillModal(id, name, start, end){
   lineName.attr('value', name);
   lineStart.attr('value', start);
   lineEnd.attr('value', end);
-  alert("Sur ma ligne dans mon modal il y a "+lineName.attr('value'));
+  //alert("Sur ma ligne dans mon modal il y a "+lineName.attr('value'));
   $('[name="saveCloseButton"]').attr('id', id);
 }
 
