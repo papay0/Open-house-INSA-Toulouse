@@ -22,7 +22,7 @@
  		});
  	},
 
- 	goto: function(req, res){
+ 	gotoNotCloudCode: function(req, res){
  		var presentationId = req.param('presentationId');
  		var presentations = Parse.Object.extend("Presentations");
  		var query = new Parse.Query(presentations);
@@ -44,8 +44,9 @@
  		});
  	},
 
- 	gotoCloudCode: function(req, res){
- 		Parse.Cloud.run('goto', {}, {
+ 	goto: function(req, res){
+ 		var presentationId = req.param('presentationId');
+ 		Parse.Cloud.run('goto', {presentationId: presentationId}, {
  			success: function(object) {
  				if (object.get('geolocation') != null){
  					return res.view(null, {
