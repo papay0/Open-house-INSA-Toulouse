@@ -1,7 +1,7 @@
 <div class="container">
     <h1> INSA Toulouse </h1>
     <h2>INSA JPO</h2>
-    <p>Veuillez selectionner les présentations. </p>            
+    <p>Veuillez selectionner les présentations. </p>
     <table class="table table-hover">
         <thead>
             <tr>
@@ -31,7 +31,7 @@ $(function () {
       var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
       $("#start<%= presentation.id %>").text(start);
       var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
-      $("#end<%= presentation.id %>").text(end);      
+      $("#end<%= presentation.id %>").text(end);
       <% })%>
 
     $('.suscribeButton').click(function(){

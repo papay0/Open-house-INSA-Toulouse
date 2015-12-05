@@ -22,6 +22,21 @@
  		});
  	},
 
+  showSingleView: function(req, res){
+ 		Parse.Cloud.run('getPresentations', {}, {
+ 			success: function(results) {
+ 				res.view('singleView',{
+ 					presentations: results,
+ 				});
+ 			},
+ 			error: function(error) {
+ 				sails.log("Error: getPresentations " + error.code + " " + error.message);
+ 				res.view('500', {error : "Error: show " + error.code + " " + error.message});
+
+ 			}
+ 		});
+ 	},
+
  	//TODELETE
  	gotoNotCloudCode: function(req, res){
  		var presentationId = req.param('presentationId');
@@ -170,7 +185,7 @@
  		} else {
  			sails.log("editPost, it's not a json ...")
  			res.view('500', {error : "Error: editPost " + error.code + " " + error.message});
- 		}		
+ 		}
  	},
 
  	todo: function(req, res){
@@ -179,4 +194,3 @@
  	}
 
  };
-
