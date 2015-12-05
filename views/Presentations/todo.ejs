@@ -1,16 +1,157 @@
-<div id="content"></div>
+<div id="content">
+
+</div>
+
 <script type="text/babel">
-var CommentBox = React.createClass({
-  render: function() {
+
+var Table = ReactBootstrap.Table;
+var Button = ReactBootstrap.Button;
+var Modal = ReactBootstrap.Modal;
+var Input = ReactBootstrap.Input;
+
+const Trigger = React.createClass({
+  getInitialState() {
+    return {
+      show: false,
+      name: this.props.name,
+      start: this.props.start,
+      end: this.props.end,
+      id: this.props.id
+    };
+  },
+  save: function(){
+    var data = {
+      name: this.state.name,
+      start: this.state.start,
+      end: this.state.end,
+      id: this.state.id
+    };
+    $.ajax({
+      url: '/presentations/edit',
+      dataType: 'json',
+      type: 'POST',
+      data: data,
+      success: function(data) {
+        this.setState({ show: false});
+        alert("Ajax ok");
+      }.bind(this),
+      error: function(xhr, status, err) {
+        alert("Ajax pas ok");
+      }.bind(this)
+    });
+  },
+  handleNameChange: function(event) {
+    this.setState({ name: event.target.value });
+  },
+  handleStartChange: function(event) {
+    this.setState({ start: event.target.value });
+  },
+  handleEndChange: function(event) {
+    this.setState({ end: event.target.value });
+  },
+  render() {
+    let close = () => this.setState({ show: false});
+    var name = this.state.name;
+    var start = this.state.start;
+    var end = this.state.end;
     return (
-      <div className="commentBox">
-        Hello, world! I am a CommentBox.
+      <div className="modal-container">
+        <Button
+          bsStyle="primary"
+          bsSize="large"
+          onClick={() => this.setState({ show: true})}
+        >
+          Edit
+        </Button>
+
+        <Modal
+          show={this.state.show}
+          onHide={close}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title">Edit Presentation</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <form className="form-horizontal">
+              <Input type="text" label="Name" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={name} onChange={this.handleNameChange}/>
+              <Input type="text" label="Start" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={start} onChange={this.handleStartChange}/>
+              <Input type="text" label="End" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={end} onChange={this.handleEndChange}/>
+          </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.save}>Save</Button>
+            <Button onClick={close}>Close</Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
 });
+
+var Presentations = React.createClass({
+  mixins: [React.addons.LinkedStateMixin],
+  loadPresentationsFromServer: function(){
+    $.ajax({
+          url: this.props.url,
+          dataType: 'json',
+          cache: false,
+          success: function(data) {
+            this.setState({presentations_parse: data});
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error(this.props.url, status, err.toString());
+          }.bind(this)
+        });
+  },
+  getInitialState: function() {
+    return {
+      presentations_parse: []
+    };
+  },
+  componentDidMount: function() {
+    this.loadPresentationsFromServer();
+    setInterval(this.loadPresentationsFromServer, this.props.pollInterval);
+  },
+  render: function(){
+    var presentations = this.state.presentations_parse.map(function(presentation) {
+      return (
+        <tr key={presentation.objectId}>
+          <td >#</td>
+          <td >{presentation.name}</td>
+          <td >{presentation.start.iso}</td>
+          <td >{presentation.end.iso}</td>
+           <td ><Trigger id={presentation.objectId} name={presentation.name} start={presentation.start.iso} end={presentation.end.iso}/></td>
+        </tr>
+      );
+    });
+
+    const tableInstance = (
+      <Table striped bordered condensed hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Edit</th>
+          </tr>
+          </thead>
+          <tbody>
+              {presentations}
+          </tbody>
+      </Table>
+    );
+    return (
+      tableInstance
+    );
+  }
+});
+
 ReactDOM.render(
-  <CommentBox />,
-  document.getElementById('content')
-);
+    <Presentations url="/react/presentations/" pollInterval={8000}/>,
+    document.getElementById('content')
+  );
+
 </script>

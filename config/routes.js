@@ -61,6 +61,11 @@
         action: 'editPost'
     },
 
+    'get /react/presentations': {
+      controller: 'PresentationsController',
+      action: 'getPresentations'
+    },
+
     /***************************************************************************
     *                                                                          *
     *                         Planning                                         *
@@ -164,7 +169,8 @@
     * for configuration options and examples.                                  *
     *                                                                          *
     ***************************************************************************/
-    'get /api/comments': {
-
+    'post /api/comments': {
+        controller: 'PresentationsController',
+        action: 'todoPost'
     }
 };

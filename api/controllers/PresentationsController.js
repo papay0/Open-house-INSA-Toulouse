@@ -163,6 +163,19 @@
  		});
  	},
 
+  getPresentations: function(req, res){
+    sails.log("getPresentations");
+    Parse.Cloud.run('getPresentations', {}, {
+ 			success: function(results) {
+        sails.log("getPresentations success");
+ 				  return res.json(results);
+ 			},
+ 			error: function(error) {
+ 				res.view('500', {error : "Error getPresentations for React " + error.code + " " + error.message});
+ 			}
+ 		});
+  },
+
  	editPost: function(req,res){
  		if (req.wantsJSON){
  			var name = req.param('name');
@@ -191,6 +204,10 @@
  	todo: function(req, res){
  		sails.log("I'm in todo");
  		res.view({layout: 'Admin/admin'});
+ 	},
+
+ 	todoPost: function(req, res){
+
  	}
 
  };
