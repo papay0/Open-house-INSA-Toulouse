@@ -42,7 +42,6 @@ const Trigger = React.createClass({
   },
   handleNameChange: function(event) {
     this.setState({ name: event.target.value });
-    this.props.name(event.target.value);
   },
   handleStartChange: function(event) {
     this.setState({ start: event.target.value });
@@ -76,7 +75,7 @@ const Trigger = React.createClass({
           </Modal.Header>
           <Modal.Body>
           <form className="form-horizontal">
-              <Input type="text" label="Name" labelClassName="col-xs-2" wrapperClassName="col-xs-10" nameLink={this.props.nameLink} onChange={this.handleNameChange}/>
+              <Input type="text" label="Name" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={name} onChange={this.handleNameChange}/>
               <Input type="text" label="Start" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={start} onChange={this.handleStartChange}/>
               <Input type="text" label="End" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={end} onChange={this.handleEndChange}/>
           </form>
@@ -99,7 +98,7 @@ var Presentations = React.createClass({
           dataType: 'json',
           cache: false,
           success: function(data) {
-            this.setState({presentations: data});
+            this.setState({presentations_parse: data});
           }.bind(this),
           error: function(xhr, status, err) {
             console.error(this.props.url, status, err.toString());
@@ -108,7 +107,7 @@ var Presentations = React.createClass({
   },
   getInitialState: function() {
     return {
-      presentations: []
+      presentations_parse: []
     };
   },
   componentDidMount: function() {
@@ -116,7 +115,7 @@ var Presentations = React.createClass({
     setInterval(this.loadPresentationsFromServer, this.props.pollInterval);
   },
   render: function(){
-    var presentations = this.state.presentations.map(function(presentation) {
+    var presentations = this.state.presentations_parse.map(function(presentation) {
       return (
         <tr key={presentation.objectId}>
           <td >#</td>
