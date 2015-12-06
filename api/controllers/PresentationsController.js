@@ -149,10 +149,8 @@
  	},
 
   getPresentations: function(req, res){
-    sails.log("getPresentations");
     Parse.Cloud.run('getPresentations', {}, {
  			success: function(results) {
-        sails.log("getPresentations success");
  				  return res.json(results);
  			},
  			error: function(error) {

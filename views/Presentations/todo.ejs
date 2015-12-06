@@ -4,10 +4,14 @@
 
 <script type="text/babel">
 
+
+
 var Table = ReactBootstrap.Table;
 var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var Input = ReactBootstrap.Input;
+// var IntlMixin     = ReactIntl.IntlMixin;
+// var FormattedDate = ReactIntl.FormattedDate;
 
 const Trigger = React.createClass({
   getInitialState() {
@@ -33,7 +37,6 @@ const Trigger = React.createClass({
       data: data,
       success: function(data) {
         this.setState({ show: false});
-        alert("Ajax ok");
       }.bind(this),
       error: function(xhr, status, err) {
         alert("Ajax pas ok");
@@ -91,7 +94,6 @@ const Trigger = React.createClass({
 });
 
 var Presentations = React.createClass({
-  mixins: [React.addons.LinkedStateMixin],
   loadPresentationsFromServer: function(){
     $.ajax({
           url: this.props.url,
@@ -116,16 +118,20 @@ var Presentations = React.createClass({
   },
   render: function(){
     var presentations = this.state.presentations_parse.map(function(presentation) {
+      var start = moment(presentation.start.iso).zone(0).format('MM/DD/YYYY HH:mm');
+      var end = moment(presentation.end.iso).zone(0).format('MM/DD/YYYY HH:mm');
+      var name = presentation.name;
+      var id = presentation.objectId;
       return (
-        <tr key={presentation.objectId}>
+        <tr key={id}>
           <td >#</td>
-          <td >{presentation.name}</td>
-          <td >{presentation.start.iso}</td>
-          <td >{presentation.end.iso}</td>
-           <td ><Trigger id={presentation.objectId} name={presentation.name} start={presentation.start.iso} end={presentation.end.iso}/></td>
+          <td >{name}</td>
+          <td >{start}</td>
+          <td >{end}</td>
+           <td ><Trigger id={id} name={name} start={start} end={end}/></td>
         </tr>
       );
-    });
+    }, this);
 
     const tableInstance = (
       <Table striped bordered condensed hover>
@@ -149,8 +155,39 @@ var Presentations = React.createClass({
   }
 });
 
+var DisplayContainer2 = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState:function(){
+        return{
+            value:'My Value',
+            value2:'My Value2'
+        }
+    },
+    render:function(){
+        return (
+            <div className="DisplayContainer">
+                <h4>{this.state.value}</h4>
+                <h4>{this.state.value2}</h4>
+                <InputBox2 valueLink={this.linkState('value')}  valueLink={this.linkState('value2')} />
+            </div>
+        );
+    }
+});
+
+var InputBox2 = React.createClass({
+    render:function(){
+        return (
+          <div>
+          <input type="text" valueLink={this.props.valueLink} />
+          <input type="text" valueLink={this.props.valueLink} />
+          </div>
+      )
+    }
+});
+
 ReactDOM.render(
-    <Presentations url="/react/presentations/" pollInterval={8000}/>,
+   //<DisplayContainer2/>,
+    <Presentations url="/react/presentations/" pollInterval={2000}/>,
     document.getElementById('content')
   );
 

@@ -69,7 +69,7 @@ Parse.Cloud.define("suscribePresentation", function(request, response){
 				user.save(null, {
 					success: function(presentation) {
 						response.success(" Presentation suscribed ");
-					},		
+					},
 					error: function(presentation, error) {
 						response.error("Failed to add presentation Object in Parse database: "+error.message);
 					}
@@ -98,7 +98,7 @@ Parse.Cloud.define("removePresentation", function(request, response){
 				user.save(null, {
 					success: function(presentation) {
 						response.success(" Presentation unsuscribed ");
-					},		
+					},
 					error: function(presentation, error) {
 						response.error("Failed to delete presentation Object in Parse database: "+error.message);
 					}
@@ -130,8 +130,8 @@ Parse.Cloud.define("updatePresentation", function(request, response) {
 			var end = new Date(request.params.end);
 			var presentations = Parse.Object.extend("Presentations");
 			var query = new Parse.Query(presentations);
-			console.log("id: "+id);
-			
+			console.log("start: "+start);
+
 			query.get(id, {
 				success: function(object) {
 					object.set("name", name);
@@ -141,7 +141,7 @@ Parse.Cloud.define("updatePresentation", function(request, response) {
 					object.save(null, {
 						success: function(presentation) {
 							response.success(presentation);
-						},		
+						},
 						error: function(presentation, error) {
 							response.error("Failed to update presentation Object in Parse database: "+error.message);
 						}
@@ -176,13 +176,13 @@ Parse.Cloud.define("createPresentation", function(request, response) {
 			presentation.save(null, {
 				success: function(presentation) {
 					response.success("Presentation added: "+presentation);
-				},		
+				},
 				error: function(presentation, error) {
 					response.error("Failed to add presentation Object in Parse database: "+error.message);
 				}
 			});
 		} else {
-			response.error("You didn't give all the arguments.");	
+			response.error("You didn't give all the arguments.");
 		}
 	} else {
 		response.error("You need to be an administrateur to create a presentation!");
