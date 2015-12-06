@@ -38,6 +38,14 @@
     *                         Presentations                                    *
     *                                                                          *
     ***************************************************************************/
+    'get /test': {
+      controller: 'PresentationsController',
+      action: 'showSingleView',
+      locals: {
+        layout: 'singleViewLayout'
+      }
+    },
+
     '/': {
         controller: 'PresentationsController',
         action: 'show'

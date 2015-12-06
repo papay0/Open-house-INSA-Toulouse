@@ -1,0 +1,56 @@
+<div class="row fullHeight">
+  <div id="menuContainer" class="col-md-3">
+    <center>
+      <h1 style="margin-bottom:30px;">INSA JPO</h1>
+    </center>
+    <span class="label label-default">Mon Planning</span>
+    <div class="list-group">
+      <% _.each(presentations, function (presentation) { %>
+        <a id="<%= presentation.id %>" href="#" class="list-group-item listePresentation" lat="<%= presentation.get('location').latitude %>" long="<%= presentation.get('location').longitude %>">
+          <div class="row">
+            <div class="col-xs-1"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></div>
+            <div class="col-xs-3"><%= presentation.get('name') %></div>
+            <div id="start<%= presentation.id %>" class="col-xs-3"></div>
+            <div id="end<%= presentation.id %>" class="col-xs-3"></div>
+          </div>
+        </a>
+        <a id="hidden<%= presentation.id %>" href="#" class="hidden list-group-item">
+          <div class="row">
+            <div class="col-xs-4"><%= presentation.get('name') %></div>
+            <div id="start<%= presentation.id %>" class="col-xs-4"></div>
+            <div id="end<%= presentation.id %>" class="col-xs-4"></div>
+          </div>
+        </a>
+      <% })%>
+    </div>
+  </div>
+  <div id="mapContainer" class="col-md-9 hidden-xs">
+    <div id="map"></div>
+  </div>
+    <script src="js/maps.js"></script>
+    <script type="text/javascript">
+      $(function () {
+          <% _.each(presentations, function (presentation) { %>
+            var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
+            $("#start<%= presentation.id %>").text(start);
+            var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
+            $("#end<%= presentation.id %>").text(end);
+            <% })%>
+
+            $(".listePresentation").click(function(){
+              $('.active').each(function(){
+                $(this).attr('class', "listePresentation list-group-item");
+              });
+              $(this).attr('class', "listePresentation active list-group-item");
+              latitudeDestination = $(this).attr('lat');
+              longitudeDestination = $(this).attr('long');
+              initMap();
+            });
+      });
+    </script>
+
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCirxzx91LVmHxOjOBrcWtE20Ck3ArLynw&callback=initMap">
+    </script>
+  </div>
+</div>

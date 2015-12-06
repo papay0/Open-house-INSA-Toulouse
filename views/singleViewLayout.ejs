@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>JPO INSA Toulouse</title>
+      <!-- Viewport mobile tag for sensible mobile support -->
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+        <!--STYLES-->
+        <link rel="stylesheet" href="/styles/bootstrap-datetimepicker-standalone.css">
+        <link rel="stylesheet" href="/styles/bootstrap-datetimepicker.css">
+        <link rel="stylesheet" href="/styles/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="/styles/bootstrap-theme.css">
+        <link rel="stylesheet" href="/styles/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="/styles/bootstrap.css">
+        <link rel="stylesheet" href="/styles/bootstrap.min.css">
+        <link rel="stylesheet" href="/styles/importer.css">
+        <!--STYLES END-->
+        <style>
+          html, body, .container-fluid, #mapContainer, #map, .fullHeight, #menuContainer {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+          }
+          #mapContainer, #map {
+            border-radius: 10px;
+            box-shadow: -3px 0px 5px 1px rgba(0, 0, 0, 0.4);
+          }
+          #menuContainer{
+            background: #EEEEEE;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container-fluid">
+          <%- body %>
+        </div>
+
+        <!--SCRIPTS-->
+        <script src="/js/dependencies/sails.io.js"></script>
+        <script src="/js/dependencies/bootstrap.min.js"></script>
+        <script src="/js/dependencies/moment/min/moment.min.js"></script>
+        <script src="/js/dependencies/bootstrap-datetimepicker.min.js"></script>
+        <!--SCRIPTS END-->
+      </body>
+      </html>
