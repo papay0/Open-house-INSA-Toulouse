@@ -1,184 +1,218 @@
-<section class="content">
-  <div class="row">
+<div id="content">
+
+</div>
+
+<script type="text/babel">
 
 
-    <div class="box">
-      <div class="box-header with-border">
-        <h3 class="box-title">Select a presentation</h3>
-      </div><!-- /.box-header -->
-      <div class="box-body">
-        <table class="table table-bordered">
+
+var Table = ReactBootstrap.Table;
+var Button = ReactBootstrap.Button;
+var Modal = ReactBootstrap.Modal;
+var Input = ReactBootstrap.Input;
+var Glyphicon = ReactBootstrap.Glyphicon;
+var DropdownButton = ReactBootstrap.DropdownButton;
+var DateTimeField = ReactBootstrap.DateTimeField;
+// var IntlMixin     = ReactIntl.IntlMixin;
+// var FormattedDate = ReactIntl.FormattedDate;
+
+const EditModal = React.createClass({
+  getInitialState() {
+    return {
+      show: false,
+      name: this.props.name,
+      start: this.props.start,
+      end: this.props.end,
+      id: this.props.id,
+      styleButton : "primary"
+    };
+  },
+  save: function(){
+    var data = {
+      name: this.state.name,
+      start: this.state.start,
+      end: this.state.end,
+      id: this.state.id
+    };
+    $.ajax({
+      url: '/presentations/edit',
+      dataType: 'json',
+      type: 'POST',
+      data: data,
+      success: function(data) {
+        this.setState({ show: false});
+        this.changeStyleButton("success");
+      }.bind(this),
+      error: function(xhr, status, err) {
+        alert("Something went wrong when you tried to edit a presentation");
+        this.changeStyleButton("danger");
+        this.setState({ show: false});
+      }.bind(this)
+    });
+  },
+  handleNameChange: function(event) {
+    this.setState({ name: event.target.value });
+  },
+  handleStartChange: function(event) {
+    this.setState({ start: event.target.value });
+  },
+  handleEndChange: function(event) {
+    this.setState({ end: event.target.value });
+  },
+  changeStyleButton: function(state){
+    var that = this;
+    this.setState({ styleButton: state});
+    setTimeout(function(){
+      that.setState({ styleButton: "primary"});
+    }, 2000);
+  },
+  render() {
+    let close = () => this.setState({ show: false});
+    var name = this.state.name;
+    var start = this.state.start;
+    var end = this.state.end;
+
+
+
+    return (
+      <div className="modal-container">
+        <Button
+          bsStyle={this.state.styleButton}
+          bsSize="xsmall"
+          onClick={() => this.setState({ show: true})}
+        >
+          Edit
+        </Button>
+
+        <Modal
+          show={this.state.show}
+          onHide={close}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title">Edit Presentation</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <form className="form-horizontal">
+              <Input type="text" label="Name" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={name} onChange={this.handleNameChange}/>
+              <Input type="text" label="Start" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={start} onChange={this.handleStartChange}/>
+              <Input type="text" label="End" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={end} onChange={this.handleEndChange}/>
+          </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.save} bsStyle="success">Save</Button>
+            <Button onClick={close}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+});
+
+var Presentations = React.createClass({
+  loadPresentationsFromServer: function(){
+    $.ajax({
+          url: this.props.url,
+          dataType: 'json',
+          cache: false,
+          success: function(data) {
+            this.setState({presentations_parse: data});
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error(this.props.url, status, err.toString());
+          }.bind(this)
+        });
+  },
+  getInitialState: function() {
+    return {
+      presentations_parse: []
+    };
+  },
+  componentDidMount: function() {
+    this.loadPresentationsFromServer();
+    setInterval(this.loadPresentationsFromServer, this.props.pollInterval);
+  },
+  statics: {
+    someMethod: function() {
+      alert('in statics func');
+    }
+  },
+  render: function(){
+    var presentations = this.state.presentations_parse.map(function(presentation) {
+      var start = moment(presentation.start.iso).zone(0).format('MM/DD/YYYY HH:mm');
+      var end = moment(presentation.end.iso).zone(0).format('MM/DD/YYYY HH:mm');
+      var name = presentation.name;
+      var id = presentation.objectId;
+      return (
+        <tr key={id}>
+          <td >#</td>
+          <td >{name}</td>
+          <td >{start}</td>
+          <td >{end}</td>
+           <td ><EditModal id={id} name={name} start={start} end={end}/></td>
+        </tr>
+      );
+    }, this);
+    var thEditStyle = {
+      width: 40
+    };
+    const tableInstance = (
+      <Table striped bordered condensed hover>
+        <thead>
           <tr>
-            <th style="width: 10px">#</th>
+            <th>#</th>
             <th>Name</th>
             <th>Start</th>
             <th>End</th>
-            <th style="width: 40px">Edit</th>
+            <th style={thEditStyle}>Edit</th>
           </tr>
-          <tr>
-            <% var i = 1 %>
-            <% _.each(presentations, function (presentation) { %>
-            <td id="<%= presentation.id %>"><%= i %>.</td>
-            <% i++ %>
-            <td id="name<%= presentation.id %>"><%= presentation.get('name')%> </td>
-            <td id="start<%= presentation.id %>"><%= presentation.get('start')%></td>
-            <td id="end<%= presentation.id %>"><%= presentation.get('end')%></td>
-            <td> <i id="<%= presentation.id %>" class="glyphicon glyphicon-pencil" data-original-title=""  data-toggle="modal" data-target="#myModal" title="myTitle" style="cursor: pointer;"></i></td>
-          </tr>
-          <% })%>
-        </table>
-      </div><!-- /.box-body -->
-    </div>
-
-    <div id="myModal" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Edit presentation</h4>
-          </div>
-          <div class="modal-body">
-            <form class="form-horizontal" method="" action="">
-              <fieldset>
-                <legend>Edit presentation</legend>
-                <!-- Text input-->
-                <div class="form-group">
-                  <label class="col-md-4 control-label" for="name">Name</label>  
-                  <div class="col-md-4">
-                    <input autocomplete='off' id="name" name="name" type="text" placeholder="placeholder" class="form-control input-md" value="" >
-                  </div>
-                </div>
-                <!-- Text input-->
-                <div class="form-group">
-                  <label class="col-md-4 control-label" for="start">Start</label>  
-                  <div class="col-md-4">
-                    <input id="start" name="start" type="text" placeholder="placeholder" class="form-control input-md" value="">
-
-                  </div>
-                </div>
-                <!-- Text input-->
-                <div class="form-group">
-                  <label class="col-md-4 control-label" for="end">End</label>  
-                  <div class="col-md-4">
-                    <input id="end" name="end" type="text" placeholder="placeholder" class="form-control input-md" value="">
-
-                  </div>
-                </div>
-              </fieldset>
-            </form>
-            <p>Some text in the modal.</p>
-          </div>
-          <div id="" class="modal-footer" name="saveCloseButton">
-            <button id="save" name="button1id" data-dismiss="modal" class="btn btn-success">Save</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-
-      </div>
-    </div>    
-  </div>
-</section>
-
-<script type="text/javascript">
-  $(function () {
-    <% _.each(presentations, function (presentation) { %>
-      var start = moment(Date.parse("<%= presentation.get('start') %>")).format('MM/DD/YYYY HH:mm');
-      //alert($("#start<%= presentation.id %>").text()); 
-      $("#start<%= presentation.id %>").text(start);
-      var end = moment(Date.parse("<%= presentation.get('end') %>")).format('MM/DD/YYYY HH:mm');
-      $("#end<%= presentation.id %>").text(end);      
-      <% })%>
-
-    $('[data-target="#myModal"]').click(function(event) {
-      var id = this.id;
-      var name = $('#name'+id).text();
-      var start = $("#start"+id).text();
-      var end = $("#end"+id).text();
-      fillModal(id, name, start, end);
-    });
-
-    // $('form').submit(function () {
-    //         //alert('Je send mon form');
-    //   var id = $('[name="saveCancelButton"]').attr('id');
-    //   //alert(id);
-    //   var name = $('.col-md-4 #name').attr('value');
-    //   //alert(name)
-    //   var start = $('.col-md-4 #start').attr('value');
-    //   var end = $('.col-md-4 #end').attr('value');
-    //   var data = {id: id, name: name, start: start, end: end};
-    //   //console.log("data: "+data);
-    //   //alert(data.name);
-    //   $.ajax({
-    //     type: 'POST',
-    //     url: '/presentations/edit',
-    //     timeout: 3000,
-    //     dataType: 'json',
-    //     data: JSON.stringify(data),
-    //     contentType: "application/json; charset=UTF-8",
-    //     success: function(data) {
-    //       // location.href = "presentations/edit";
-    //       //$(location).attr('href',"/presentations/edit");
-    //       alert(data); 
-    //     },
-    //     error: function() {
-    //       alert('La requête n\'a pas abouti'); }
-    //     }); 
-    //         return false;
-    //     });
-
-$('.modal').on('hidden.bs.modal', function(){
-    $(this).find('form')[0].reset();
+          </thead>
+          <tbody>
+              {presentations}
+          </tbody>
+      </Table>
+    );
+    return (
+      tableInstance
+    );
+  }
 });
 
-$('#save').click(function(){
-      var id = $('[name="saveCloseButton"]').attr('id');
-      //alert(id);
-      var name = $('.col-md-4 #name').val();
-      //alert(name)
-      var start = $('.col-md-4 #start').val()
-      var end = $('.col-md-4 #end').val()
-      var data = {id: id, name: name, start: start, end: end};
-      $.ajax({
-        type: 'POST',
-        url: '/presentations/edit',
-        timeout: 10000,
-        dataType: 'json',
-        cache: false,
-        data: JSON.stringify(data),
-        contentType: "application/json; charset=UTF-8",
-        success: function(data) {
-          console.log("success AJAX: "+JSON.stringify(data));
-          fillPage(id, name, start, end);
-          //alert(data.name); 
-        },
-        error: function(error) {
-          console.log("I'm in error ajax");
-          //alert('La requête n\'a pas abouti, error: '+error.message+" error code: "+error.code); 
-       }
-     });
-      //setTimeout(function () { location.reload(true); }, 1000);
-    });
-
-function fillPage(id, name, start, end){
-  var name = $('#name'+id).text(name);
-  var start = $("#start"+id).text(start);
-  var end = $("#end"+id).text(end);
-}
-
-function fillModal(id, name, start, end){
-  //alert("Name "+name);
-  var lineName = $('.col-md-4 #name');
-  var lineStart = $('.col-md-4 #start');
-  var lineEnd = $('.col-md-4 #end');
-  lineName.attr('value', name);
-  lineStart.attr('value', start);
-  lineEnd.attr('value', end);
-  //alert("Sur ma ligne dans mon modal il y a "+lineName.attr('value'));
-  $('[name="saveCloseButton"]').attr('id', id);
-}
-
-
+var DisplayContainer2 = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState:function(){
+        return{
+            value:'My Value',
+            value2:'My Value2'
+        }
+    },
+    render:function(){
+        return (
+            <div className="DisplayContainer">
+                <h4>{this.state.value}</h4>
+                <h4>{this.state.value2}</h4>
+                <InputBox2 valueLink={this.linkState('value')}  valueLink={this.linkState('value2')} />
+            </div>
+        );
+    }
 });
+
+var InputBox2 = React.createClass({
+    render:function(){
+        return (
+          <div>
+          <input type="text" valueLink={this.props.valueLink} />
+          <input type="text" valueLink={this.props.valueLink} />
+          </div>
+      )
+    }
+});
+
+ReactDOM.render(
+   //<DisplayContainer2/>,
+    <Presentations url="/react/presentations/" pollInterval={2000}/>,
+    document.getElementById('content')
+  );
+
 </script>

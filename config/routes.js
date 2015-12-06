@@ -169,8 +169,4 @@
     * for configuration options and examples.                                  *
     *                                                                          *
     ***************************************************************************/
-    'post /api/comments': {
-        controller: 'PresentationsController',
-        action: 'todoPost'
-    }
 };

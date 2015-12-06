@@ -199,13 +199,4 @@
  		}
  	},
 
- 	todo: function(req, res){
- 		sails.log("I'm in todo");
- 		res.view({layout: 'Admin/admin'});
- 	},
-
- 	todoPost: function(req, res){
-
- 	}
-
  };
