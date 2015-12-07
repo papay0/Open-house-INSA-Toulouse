@@ -139,14 +139,14 @@ var Presentations = React.createClass({
     }
   },
   render: function(){
-    var presentations = this.state.presentations_parse.map(function(presentation) {
+    var presentations = this.state.presentations_parse.map(function(presentation, index) {
       var start = moment(presentation.start.iso).zone(0).format('MM/DD/YYYY HH:mm');
       var end = moment(presentation.end.iso).zone(0).format('MM/DD/YYYY HH:mm');
       var name = presentation.name;
       var id = presentation.objectId;
       return (
         <tr key={id}>
-          <td >#</td>
+          <td >{index+1}</td>
           <td >{name}</td>
           <td >{start}</td>
           <td >{end}</td>
