@@ -56,6 +56,13 @@
         action: 'create'
     },
 
+    'get /presentations/create': {
+        view: 'Presentations/reactCreate',
+        locals: {
+          layout: 'Admin/admin'
+        }
+    },
+
     'post /presentations/edit': {
         controller: 'PresentationsController',
         action: 'editPost'

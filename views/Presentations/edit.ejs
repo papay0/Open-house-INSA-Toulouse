@@ -133,11 +133,6 @@ var Presentations = React.createClass({
     this.loadPresentationsFromServer();
     setInterval(this.loadPresentationsFromServer, this.props.pollInterval);
   },
-  statics: {
-    someMethod: function() {
-      alert('in statics func');
-    }
-  },
   render: function(){
     var presentations = this.state.presentations_parse.map(function(presentation, index) {
       var start = moment(presentation.start.iso).zone(0).format('MM/DD/YYYY HH:mm');
