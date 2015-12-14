@@ -8,6 +8,7 @@
 
 var Table = ReactBootstrap.Table;
 var Button = ReactBootstrap.Button;
+var Alert = ReactBootstrap.Alert;
 var Modal = ReactBootstrap.Modal;
 var Input = ReactBootstrap.Input;
 var Glyphicon = ReactBootstrap.Glyphicon;
@@ -15,6 +16,38 @@ var DropdownButton = ReactBootstrap.DropdownButton;
 var DateTimeField = ReactBootstrap.DateTimeField;
 // var IntlMixin     = ReactIntl.IntlMixin;
 // var FormattedDate = ReactIntl.FormattedDate;
+
+const AlertAutoDismissable = React.createClass({
+  getInitialState() {
+    return {
+      alertVisible: true
+    };
+  },
+
+  render() {
+    if (this.state.alertVisible) {
+      return (
+        <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss} dismissAfter={2000}>
+          <h4>Oh snap! You got an error!</h4>
+          <p>But this will hide after 2 seconds.</p>
+        </Alert>
+      );
+    }
+
+    return (
+      <Button onClick={this.handleAlertShow}>Show Alert</Button>
+    );
+  },
+
+  handleAlertDismiss() {
+    this.setState({alertVisible: false});
+  },
+
+  handleAlertShow() {
+    this.setState({alertVisible: true});
+  }
+});
+
 
 const EditModal = React.createClass({
   getInitialState() {
@@ -24,7 +57,9 @@ const EditModal = React.createClass({
       start: this.props.start,
       end: this.props.end,
       id: this.props.id,
-      styleButton : "primary"
+      styleButton : "primary",
+      alertVisible: false,
+      messageError: ""
     };
   },
   save: function(){
@@ -43,10 +78,12 @@ const EditModal = React.createClass({
         this.setState({ show: false});
         this.changeStyleButton("success");
       }.bind(this),
-      error: function(xhr, status, err) {
-        alert("Something went wrong when you tried to edit a presentation");
+      error: function(res, status, err) {
+        //alert("Something went wrong when you tried to edit a presentation");
         this.changeStyleButton("danger");
-        this.setState({ show: false});
+        this.setState({messageError: "Something went wrong: res: "+res+" status "+status+" error "+err})
+        this.setState({alertVisible: true});
+        // this.setState({ show: false});
       }.bind(this)
     });
   },
@@ -58,6 +95,13 @@ const EditModal = React.createClass({
   },
   handleEndChange: function(event) {
     this.setState({ end: event.target.value });
+  },
+  handleAlertDismiss() {
+    this.setState({alertVisible: false});
+  },
+
+  handleAlertShow() {
+    this.setState({alertVisible: true});
   },
   changeStyleButton: function(state){
     var that = this;
@@ -72,7 +116,14 @@ const EditModal = React.createClass({
     var start = this.state.start;
     var end = this.state.end;
 
-
+    var alert = (
+          <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss} >
+            <h4>{this.state.messageError}</h4>
+          </Alert>
+    );
+    if (!this.state.alertVisible){
+      alert = null;
+    }
 
     return (
       <div className="modal-container">
@@ -93,6 +144,7 @@ const EditModal = React.createClass({
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title">Edit Presentation</Modal.Title>
           </Modal.Header>
+          {alert}
           <Modal.Body>
           <form className="form-horizontal">
               <Input type="text" label="Name" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={name} onChange={this.handleNameChange}/>

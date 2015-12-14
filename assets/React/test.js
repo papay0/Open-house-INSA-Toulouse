@@ -1,7 +1,10 @@
 var Input = ReactBootstrap.Input;
 var ButtonInput = ReactBootstrap.ButtonInput;
 var Jumbotron = ReactBootstrap.Jumbotron;
+// include("/js/react-bootstrap-datetimepicker/react-bootstrap-datetimepicker.js");
 
+//var DateTimeField = require('react-datepicker');
+//var DateTimeField = require('react-bootstrap-datetimepicker');
 
 const createForm = (
   <form>
