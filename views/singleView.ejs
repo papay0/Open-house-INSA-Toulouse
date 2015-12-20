@@ -1,56 +1,205 @@
-<div class="row fullHeight">
-  <div id="menuContainer" class="col-md-3">
-    <center>
-      <h1 style="margin-bottom:30px;">INSA JPO</h1>
-    </center>
-    <span class="label label-default">Mon Planning</span>
-    <div class="list-group">
-      <% _.each(presentations, function (presentation) { %>
-        <a id="<%= presentation.id %>" href="#" class="list-group-item listePresentation" lat="<%= presentation.get('location').latitude %>" long="<%= presentation.get('location').longitude %>">
-          <div class="row">
-            <div class="col-xs-1"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></div>
-            <div class="col-xs-3"><%= presentation.get('name') %></div>
-            <div id="start<%= presentation.id %>" class="col-xs-3"></div>
-            <div id="end<%= presentation.id %>" class="col-xs-3"></div>
-          </div>
-        </a>
-        <a id="hidden<%= presentation.id %>" href="#" class="hidden list-group-item">
-          <div class="row">
-            <div class="col-xs-4"><%= presentation.get('name') %></div>
-            <div id="start<%= presentation.id %>" class="col-xs-4"></div>
-            <div id="end<%= presentation.id %>" class="col-xs-4"></div>
-          </div>
-        </a>
-      <% })%>
-    </div>
-  </div>
-  <div id="mapContainer" class="col-md-9 hidden-xs">
-    <div id="map"></div>
-  </div>
-    <script src="js/maps.js"></script>
-    <script type="text/javascript">
-      $(function () {
-          <% _.each(presentations, function (presentation) { %>
-            var start = moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm');
-            $("#start<%= presentation.id %>").text(start);
-            var end = moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm');
-            $("#end<%= presentation.id %>").text(end);
-            <% })%>
+<div id ="content" class="fullHeight" />
+<script src="js/maps.js"></script>
+<script type="text/babel">
+  var SearchBox = React.createClass({
+    doSearch:function(){
+        var query=this.refs.searchInput.value; // this is the search text
+        this.props.doSearch(query);
+    },
+    render:function(){
+        return <input type="text" className="form-control titreLeftMenu" ref="searchInput" placeholder="Search Name" value={this.props.query} onChange={this.doSearch}/>
+    }
+  });
 
-            $(".listePresentation").click(function(){
-              $('.active').each(function(){
-                $(this).attr('class', "listePresentation list-group-item");
-              });
-              $(this).attr('class', "listePresentation active list-group-item");
-              latitudeDestination = $(this).attr('lat');
-              longitudeDestination = $(this).attr('long');
-              initMap();
-            });
-      });
-    </script>
+  var PresentationList = React.createClass({
+    clicked:function(){
+      $('.collapse').collapse('hide');
+      $('#'+this.props.id).collapse('toggle');
+      latitudeDestination = this.props.lat;
+      longitudeDestination = this.props.long;
+      initMap();
+    },
+    addToPresentations:function(){
 
-    <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCirxzx91LVmHxOjOBrcWtE20Ck3ArLynw&callback=initMap">
-    </script>
-  </div>
-</div>
+    },
+    render:function(){
+      var hashId = "#"+this.props.id;
+      var divStyle = {
+        backgroundImage: 'url(' + this.props.imgUrl + ')',
+        backgroundSize: '100%',
+        backgroundPosition: '50%',
+        color : 'white',
+        height: '100px',
+      };
+      var bg = {
+        background: 'rgba(0, 0, 0, 0.55)',
+        height : '100%',
+        width : '100%',
+        paddingTop: '18px'
+      }
+        return(
+          <div>
+            <div style={divStyle}>
+              <a className="list-group-item" onClick={this.clicked} style={bg}><h3 style={{color: 'whitesmoke'}}>{this.props.name}</h3></a>
+              </div>
+              <div id={this.props.id} className="collapse">
+                <div className="list-group-item">
+                  <h4>Description : </h4>
+                  <p className="text-justify">{this.props.description}</p>
+                  <h4>Horaires : </h4>
+                  <div className="row">
+                    <div className="col-xs-1"><span className="glyphicon glyphicon-plus" aria-hidden="true" onClick={this.addToPresentations}></span></div>
+                    <div className="col-xs-5">{this.props.start}</div>
+                    <div className="col-xs-5">{this.props.end}</div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        );
+    }
+  });
+
+  var SelectedPresentationList = React.createClass({
+    clicked:function(){
+      $('.collapse').collapse('hide');
+      $('#'+this.props.id).collapse('toggle');
+      latitudeDestination = this.props.lat;
+      longitudeDestination = this.props.long;
+      initMap();
+    },
+    render:function(){
+      var hashId = "#"+this.props.id;
+      var divStyle = {
+        backgroundImage: 'url(' + this.props.imgUrl + ')',
+        backgroundSize: '100%',
+        backgroundPosition: '50%',
+        color : 'white',
+        height: '100px',
+      };
+      var bg = {
+        background: 'rgba(0, 0, 0, 0.55)',
+        height : '100%',
+        width : '100%',
+        paddingTop: '18px'
+      }
+        return(
+          <div>
+            <div style={divStyle}>
+              <a className="list-group-item" onClick={this.clicked} style={bg}><h3 style={{color: 'whitesmoke'}}>{this.props.name}</h3></a>
+              </div>
+              <div id={this.props.id} className="collapse">
+                <div className="list-group-item">
+                  <h4>Description : </h4>
+                  <p className="text-justify">{this.props.description}</p>
+                  <h4>Horaires : </h4>
+                  <div className="row">
+                    <div className="col-xs-1"><span className="glyphicon glyphicon-plus" aria-hidden="true" onClick={this.addToPresentations}></span></div>
+                    <div className="col-xs-5">{this.props.start}</div>
+                    <div className="col-xs-5">{this.props.end}</div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        );
+    }
+  });
+
+  var DisplayTable = React.createClass({
+    render:function(){
+        //making the rows to display
+        var rows=[];
+        this.props.data.forEach(function(presentation) {
+          rows.push(<PresentationList key={presentation.id} start={presentation.start} end={presentation.end} imgUrl={presentation.imgUrl} lat={presentation.lat} long={presentation.long} id={presentation.id} name={presentation.name} description={presentation.description} />)
+        });
+        //returning the table
+        return(
+          <div className="list-group" role="tablist" aria-multiselectable="true">
+            {rows}
+          </div>
+        );
+    }
+  });
+  var Map = React.createClass({
+    render:function(){
+        return(
+          <div id="mapContainer" className="fullHeight col-md-9 hidden-xs">
+            <div id="map"></div>
+          </div>
+        );
+    }
+  });
+
+  var LeftMenu = React.createClass({
+    doSearch:function(queryText){
+        console.log(queryText)
+        //get query result
+        var queryResult=[];
+        this.props.data.forEach(function(person){
+            if(person.name.toLowerCase().indexOf(queryText)!=-1)
+            queryResult.push(person);
+        });
+
+        this.setState({
+            query:queryText,
+            filteredData: queryResult
+        })
+    },
+    getInitialState:function(){
+        return{
+            query:'',
+            filteredData: this.props.data
+        }
+    },
+    render:function(){
+        return (
+            <div className="LeftMenu col-md-3 container-fluid">
+              <h1 className="centered titreLeftMenu">INSA JPO</h1>
+              <SearchBox query={this.state.query} doSearch={this.doSearch}/>
+              <h3>Presentations sélectionnées</h3>
+              <DisplayTable data={planning}/>
+              <h3>Toutes les présentations</h3>
+              <DisplayTable data={this.state.filteredData}/>
+            </div>
+        );
+    }
+  });
+  var presentations=[
+    <% _.each(presentations, function (presentation) { %>
+    {
+        name:'<%= presentation.get('name') %>',
+        id: 'sel<%= presentation.id %>',
+        description: '<%= presentation.get('description') %>',
+        start: moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm'),
+        end: moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm'),
+        lat: '<%= presentation.get('location').latitude %>',
+        long: '<%= presentation.get('location').longitude %>',
+        imgUrl: '<%= presentation.get('image').url() %>'
+    },
+    <% })%>
+  ];
+
+  var planning=[
+    <% _.each(planning, function (presentation) { %>
+    {
+        name:'<%= presentation.get('name') %>',
+        id: '<%= presentation.id %>',
+        description: '<%= presentation.get('description') %>',
+        start: moment(Date.parse("<%= presentation.get('start') %>")).format('DD/MM/YYYY HH:mm'),
+        end: moment(Date.parse("<%= presentation.get('end') %>")).format('DD/MM/YYYY HH:mm'),
+        lat: '<%= presentation.get('location').latitude %>',
+        long: '<%= presentation.get('location').longitude %>',
+        imgUrl: '<%= presentation.get('image').url() %>'
+    },
+    <% })%>
+  ]
+ReactDOM.render(
+  <div className="row fullHeight">
+    <LeftMenu data={presentations}/>
+    <Map/>
+  </div>,
+  document.getElementById('content')
+);
+</script>
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCirxzx91LVmHxOjOBrcWtE20Ck3ArLynw&callback=initMap">
+</script>

@@ -24,10 +24,21 @@
 
   showSingleView: function(req, res){
  		Parse.Cloud.run('getPresentations', {}, {
- 			success: function(results) {
- 				res.view('singleView',{
- 					presentations: results,
- 				});
+ 			success: function(resultsAll) {
+        Parse.Cloud.run('getPlanning', {}, {
+          success: function(results) {
+            res.view('singleView',{
+     					presentations: resultsAll,
+              planning: results
+     				});
+          },
+          error: function(error) {
+            sails.log("Error: Planning not found " + error.code + " " + error.message);
+            res.view('singleView',{
+     					presentations: resultsAll,
+     				});
+          }
+        });
  			},
  			error: function(error) {
  				sails.log("Error: getPresentations " + error.code + " " + error.message);

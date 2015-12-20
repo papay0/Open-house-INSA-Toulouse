@@ -6,7 +6,6 @@
 </script
 >*/
 // in a JS script launch function drawMap(latitudeDestination, longitudeDestination); and it will create a map from the user location to the destination.
-
 var map;
 var latitudeDestination = 43.570256;
 var longitudeDestination = 1.467247;
