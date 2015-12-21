@@ -18,11 +18,9 @@
         <link rel="stylesheet" href="/styles/bootstrap-theme.min.css">
         <link rel="stylesheet" href="/styles/bootstrap.css">
         <link rel="stylesheet" href="/styles/bootstrap.min.css">
+        <link rel="stylesheet" href="/styles/font-awesome.min.css">
         <link rel="stylesheet" href="/styles/importer.css">
-        <link rel="stylesheet" href="/styles/input-moment.css">
-        <link rel="stylesheet" href="/styles/react-datepicker.css">
-        <link rel="stylesheet" href="/styles/react-datetime.css">
-        <link rel="stylesheet" href="/styles/react-widgets.css">
+        <link rel="stylesheet" href="/styles/main.css">
         <!--STYLES END-->
         <style>
           html, body, .container-fluid, #mapContainer, #map, .fullHeight, #menuContainer {
@@ -30,12 +28,25 @@
             margin: 0;
             padding: 0;
           }
+          .LeftMenu{
+            overflow: auto;
+          }
+          .list-group, .list-group-item, .listePresentation, .list-group-item:first-child{
+            border-radius: 0px;
+          }
+          .list-group-item:last-child{
+            box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+          }
           #mapContainer, #map {
-            border-radius: 10px;
-            box-shadow: -3px 0px 5px 1px rgba(0, 0, 0, 0.4);
+            border-left: 0.5px solid rgba(50, 50, 50, 0.5);
+            /*border-radius: 10px;
+            box-shadow: -3px 0px 5px 1px rgba(0, 0, 0, 0.4);*/
           }
           #menuContainer{
             background: #EEEEEE;
+          }
+          .titreLeftMenu{
+            margin-bottom: 30px;
           }
         </style>
       </head>

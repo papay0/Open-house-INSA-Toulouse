@@ -1,0 +1,18 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/test">JPO INSA Toulouse</a>
+    </div>
+  </div>
+</nav>
+<div id="mapContainer" style="height:100%;">
+  <div id="map" style="height:100%;"></div>
+</div>
+<script src="js/maps.js"></script>
+<script>
+setLatitudeDest(<%= lat %>);
+setLongitudeDest(<%= long %>);
+</script>
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCirxzx91LVmHxOjOBrcWtE20Ck3ArLynw&callback=initMap">
+</script>

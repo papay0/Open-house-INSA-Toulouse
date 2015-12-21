@@ -23,19 +23,40 @@ module.exports = {
   },
 
   showSingleView: function(req, res){
-    Parse.Cloud.run('getPresentations', {}, {
-      success: function(results) {
-        res.view('singleView',{
-          presentations: results,
+ 		Parse.Cloud.run('getPresentations', {}, {
+ 			success: function(resultsAll) {
+        Parse.Cloud.run('getPlanning', {}, {
+          success: function(results) {
+            res.view('singleView',{
+     					presentations: resultsAll,
+              planning: results,
+              user: Parse.User.current()
+     				});
+          },
+          error: function(error) {
+            sails.log("Error: Planning not found " + error.code + " " + error.message);
+            res.view('singleView',{
+     					presentations: resultsAll
+     				});
+          }
         });
-      },
-      error: function(error) {
-        sails.log("Error: getPresentations " + error.code + " " + error.message);
-        res.view('500', {error : "Error: show " + error.code + " " + error.message});
+ 			},
+ 			error: function(error) {
+ 				sails.log("Error: getPresentations " + error.code + " " + error.message);
+ 				res.view('500', {error : "Error: show " + error.code + " " + error.message});
 
-      }
-    });
-  },
+ 			}
+ 		});
+ 	},
+
+  gotopresentation: function(req, res){
+   sails.log(req.param('lat'));
+   sails.log(req.param('long'));
+   res.view('Presentations/gotopresentation',{
+     lat: req.param('lat'),
+     long: req.param('long')
+   });
+ },
 
   //TODELETE
   gotoNotCloudCode: function(req, res){
@@ -134,18 +155,12 @@ module.exports = {
     sails.log("Info form: "+name+" "+start+" "+end);
     fileElement.upload(function onUploadComplete (err, files) {
       if (err) return res.redirect('/500');;
-      //sails.log("After err 1");
       var file = files[0];
-      //sails.log("Log file1: "+file);
-      //sails.log("Log file2: "+files);
       if (file !== undefined){
-        //sails.log(file);
         var filePath = file.fd;
-        //sails.log("file path = "+filePath);
         var fileName = file.filename;
         var fileSize = file.size;
         var contentType = file.type;
-        //sails.log("Content-Type = "+contentType);
         if (fileSize > 0){
           sails.log("File size = " + fileSize);
           var fs = require('fs');
@@ -165,52 +180,7 @@ module.exports = {
       }
     });
   },
-      //       sails.log("file = ");
-      //       sails.log(file);
-      //       newFile.save({
-      //         success:function(){
-      //           sails.log("File upload Successfully");
-      //         }, error: function(file, error){
-      //           sails.log("Error upload = "+error.message);
-      //         }
-      //       }).then(function(theFile){
-      //         post.set("file", theFile);
-      //         sails.log("ici je vais saver mon bazarre");
-      //         post.save(null, {
-      //           success: function(post) {
-      //             sails.log('[.then success] New object created with objectId: ' + post.id);
-      //             res.redirect('/501');
-      //           },
-      //           error: function(post, error) {
-      //             sails.log('Failed to create new object, with error code: ' + error.message);
-      //           }
-      //         });
-      //       });
-      //     } else {
-      //       post.save(null, {
-      //         success: function(post) {
-      //           sails.log('[else (>0)] New object created with objectId: ' + post.id);
-      //           res.redirect('/502');
-      //         },
-      //         error: function(post, error) {
-      //           sails.log('Failed to create new object, with error code: ' + error.message);
-      //         }
-      //       });
-      //     }
-      //   } else {
-      //     res.redirect('/503');
-      //   }
-      // });
-      // Parse.Cloud.run('createPresentation', {name: name, start: start, end: end}, {
-      //   success: function(results) {
-      //     return res.redirect('/presentations');
-      //   },
-      //   error: function(error) {
-      //     sails.log("Error: createPresentations " + error.code + " " + error.message);
-      //     res.view('500', {error : "Error: unable to create the presentation " + error.code + " " + error.message});
-      //   }
-      // });
-    //},
+
 
     create: function(req, res){
       res.view('Presentations/create', {

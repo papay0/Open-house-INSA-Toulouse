@@ -6,7 +6,6 @@
 </script
 >*/
 // in a JS script launch function drawMap(latitudeDestination, longitudeDestination); and it will create a map from the user location to the destination.
-
 var map;
 var latitudeDestination = 43.570256;
 var longitudeDestination = 1.467247;
@@ -38,6 +37,29 @@ function initMap(){
     maLatitude = 43.570256;
     maLongitude =  1.467247;
     setMap(maLatitude, maLongitude);
+  }
+}
+
+function pinpoint(latitude, longitude, title) {
+  // Create a map object and specify the DOM element for display.
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: parseFloat(latitude), lng: parseFloat(longitude)},
+    scrollwheel: false,
+    zoom: 17
+  });
+  var marker = new google.maps.Marker({
+    position: {lat: parseFloat(latitude), lng: parseFloat(longitude)},
+    map: map,
+    title: title
+  });
+  marker.setMap(map);
+  marker.addListener('click', toggleBounce);
+  function toggleBounce() {
+    if (marker.getAnimation() !== null) {
+      marker.setAnimation(null);
+    } else {
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
   }
 }
 
