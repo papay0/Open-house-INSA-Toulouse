@@ -47,6 +47,13 @@
         }
     },
 
+    'get /errorLogin': {
+        view: 'Auth/errLogin',
+        locals: {
+          layout: 'singleViewLayout'
+        }
+    },
+
     '/': {
       controller: 'PresentationsController',
       action: 'showSingleView',

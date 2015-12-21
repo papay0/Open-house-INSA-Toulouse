@@ -73,8 +73,9 @@ module.exports = {
 					return res.redirect(req.param('nextPage'));
 				},
 				error: function(user, error) {
-					res.view('500', {error : "Error: login " + error.code + " " + error.message});
-					sails.log("user: "+user+" error: "+error+" email: "+email)
+					//res.view('500', {error : "Error: login " + error.code + " " + error.message});
+					sails.log("user: "+user+" error: "+error+" email: "+email);
+					return res.redirect('/errorLogin');
 				}
 			});
 		}else{
@@ -89,14 +90,14 @@ module.exports = {
 			if (currentUser) {
 				Parse.User.logOut();
 				sails.log("I log out");
-				return res.redirect('/login');
+				return res.redirect('/');
 			} else {
 				sails.log("You were not logged in");
-				return res.redirect('/login');
+				return res.redirect('/');
 			}
 		} catch(error) {
 			sails.log("You were not logged in");
-			return res.redirect('/login');
+			return res.redirect('/');
 		}
 	}
 };
