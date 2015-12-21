@@ -50,7 +50,7 @@ module.exports = {
  	login: function(req, res) {
  		/*
 		I think it's better to use Parse.User.logIn than cloud code function.
-		Because I think it's more secure. 
+		Because I think it's more secure.
 		*/
 
 		sails.log(req.user);
