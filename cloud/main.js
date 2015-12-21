@@ -42,7 +42,7 @@ Parse.Cloud.define("getPlanning", function(req, res){
 	if(req.user){
 		Parse.User.current().fetch().then(function (user) {
 			var query = user.relation("selectedPrs").query();
-		    query.find({
+			query.find({
 				success: function(results) {
 					res.success(results);
 				},
@@ -161,26 +161,43 @@ Parse.Cloud.define("updatePresentation", function(request, response) {
 
 Parse.Cloud.define("createPresentation", function(request, response) {
 	if (request.user && request.user.get('admin')){
-		if (request.params.name && request.params.start && request.params.end){
+		if (request.params.name && request.params.start && request.params.end && request.params.file){
 			var format = "YYYY-MM-DD HH:mm";
 			var name = request.params.name;
 			var start = new Date(request.params.start);
 			var end = new Date(request.params.end);
+			var fileData = request.params.file;
+			var fileName = request.params.fileName;
+			var file = new Parse.File(fileName, fileData);
+			var geoPointTest = new Parse.GeoPoint();
 			var Presentation = Parse.Object.extend("Presentations");
 			var presentation = new Presentation();
 			presentation.set("name", name);
 			presentation.set("start", start);
 			presentation.set("end", end);
-			console.log('start: '+start);
+			presentation.set("location", geoPointTest);
 
-			presentation.save(null, {
-				success: function(presentation) {
-					response.success("Presentation added: "+presentation);
-				},
-				error: function(presentation, error) {
-					response.error("Failed to add presentation Object in Parse database: "+error.message);
+			//console.log('start: '+start);
+			console.log('file name with parse file: '+file.name());
+
+			file.save({
+				success:function(){
+					console.log("File upload Successfully");
+				}, error: function(file, error){
+					console.log("Error upload = "+error.message);
 				}
+			}).then(function(theFile){
+				presentation.set("image", theFile);
+				presentation.save(null, {
+					success: function(presentation) {
+						response.success("Presentation added: "+presentation);
+					},
+					error: function(presentation, error) {
+						response.error("Failed to add presentation Object in Parse database: "+error.message);
+					}
+				});
 			});
+
 		} else {
 			response.error("You didn't give all the arguments.");
 		}
