@@ -76,6 +76,11 @@
         action: 'editPost'
     },
 
+    'post /presentations/uploadImage': {
+        controller: 'PresentationsController',
+        action: 'uploadPost'
+    },
+
     'get /react/presentations': {
       controller: 'PresentationsController',
       action: 'getPresentations'

@@ -214,6 +214,11 @@ module.exports = {
       });
     },
 
+    uploadPost: function(req, res){
+      var image = req.param('file');
+      sails.log("Params: image: "+image);
+    },
+
     editPost: function(req,res){
       if (req.wantsJSON){
         var name = req.param('name');
