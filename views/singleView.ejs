@@ -170,7 +170,7 @@
         return(
           <div>
             <div style={divStyle}>
-              <a className="list-group-item" style={bg}>
+              <a className=" list-group-item listPresentation">
                 <div className="row">
                   <div className='col-xs-3' style={{color:'whitesmoke',paddingTop:'18px'}}>
                     {time}
@@ -181,8 +181,8 @@
                   <GotoSection lat={this.props.lat} long={this.props.long} />
                 </div>
               </a>
-              </div>
-              <PresentationInfos planning={this.props.planning} id={this.props.id} removeFromPlanning={this.props.removeFromPlanning} updatePlanning={this.props.updatePlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description} />
+            </div>
+            <PresentationInfos planning={this.props.planning} id={this.props.id} removeFromPlanning={this.props.removeFromPlanning} updatePlanning={this.props.updatePlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description} />
           </div>
         );
     }
