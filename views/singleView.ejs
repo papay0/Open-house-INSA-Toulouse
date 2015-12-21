@@ -7,7 +7,7 @@
         this.props.doSearch(query);
     },
     render:function(){
-        return <input type="text" className="form-control titreLeftMenu" ref="searchInput" placeholder="Search Name" value={this.props.query} onChange={this.doSearch}/>
+        return <input type="text" style={{boxShadow:'none',borderRadius:'0px',borderLeft:'none',borderRight:'none'}} className="form-control titreLeftMenu" ref="searchInput" placeholder="Rechercher Presentation" value={this.props.query} onChange={this.doSearch}/>
     }
   });
 
@@ -163,12 +163,19 @@
         width : '100%',
         paddingTop: '18px'
       }
+      var time;
+      if(this.props.planning){
+        time = this.props.start;
+      }
         return(
           <div>
             <div style={divStyle}>
               <a className="list-group-item" style={bg}>
                 <div className="row">
-                  <div className="col-xs-10" style={{margin:'-3px',cursor:'pointer'}} onClick={this.clicked}>
+                  <div className='col-xs-3' style={{color:'whitesmoke',paddingTop:'18px'}}>
+                    {time}
+                  </div>
+                  <div className="col-xs-7" style={{margin:'-3px',cursor:'pointer'}} onClick={this.clicked}>
                     <h3 style={{color: 'whitesmoke'}}>{this.props.name}</h3>
                   </div>
                   <GotoSection lat={this.props.lat} long={this.props.long} />
@@ -249,14 +256,18 @@
     render:function(){
         return (
             <div className="LeftMenu col-md-3 container-fluid">
-              <h1 className="centered titreLeftMenu">INSA JPO</h1>
-              <SearchBox query={this.state.query} doSearch={this.doSearch}/>
-              <% if(typeof planning !== 'undefined'){ %>
-              <h3>Presentations sélectionnées</h3>
-              <DisplayTable data={this.state.planning} removeFromPlanning={this.removeFromPlanning}/>
-              <%}%>
-              <h3>Toutes les présentations</h3>
-              <DisplayTable data={this.state.filteredData} updatePlanning={this.updatePlanning}/>
+              <nav className="navbar navbar-default">
+                <h1 style={{marginTop:'20px'}} className="centered titreLeftMenu">INSA JPO</h1>
+              </nav>
+              <div className="row container-fluid">
+                <SearchBox query={this.state.query} doSearch={this.doSearch}/>
+                <% if(typeof planning !== 'undefined'){ %>
+                <h3 style={{marginLeft:'6px'}}>Presentations sélectionnées</h3>
+                <DisplayTable data={this.state.planning} removeFromPlanning={this.removeFromPlanning}/>
+                <%}%>
+                <h3 style={{marginLeft:'6px'}}>Toutes les présentations</h3>
+                <DisplayTable data={this.state.filteredData} updatePlanning={this.updatePlanning}/>
+              </div>
             </div>
         );
     }
@@ -322,9 +333,9 @@
     render:function(){
       var toShow;
       if(connected){
-        toShow='btn btn-primary hidden';
+        toShow='hidden';
       }else{
-        toShow='btn btn-primary';
+        toShow='btn btn-primary btn-xs';
       }
         return (
           <button type="button" className={toShow} style={{position:'fixed', top:'5px', right:'5px'}} data-toggle="modal" data-target="#myModal">
@@ -338,9 +349,9 @@
     render:function(){
       var toShow;
       if(connected){
-        toShow='btn btn-primary';
+        toShow='btn btn-primary btn-xs ';
       }else{
-        toShow='btn btn-primary hidden';
+        toShow='hidden';
       }
         return (
           <a type="button" className={toShow} style={{position:'fixed', top:'5px', right:'5px'}} href="/logout">
@@ -374,16 +385,16 @@
                     </div>
                     <div className='col-xs-4'>
                       <form role="form" method="POST" action="/register">
-                        <input className='hiddenmail' type='hidden' name='email' value="dfgdfgdfgdf" />
+                        <input className='hiddenmail' type='hidden' name='email' value="" />
                         <input type="submit" className="btn btn-primary" value="S'enregistrer" />
                       </form>
                     </div>
                     <div className="col-xs-4">
                       <form role="form" method="POST" action="/login">
-                        <input className='hiddenmail' type='hidden' name='email' value="dfgdfgdfgdf" />
+                        <input className='hiddenmail' type='hidden' name='email' value="" />
                         <input type="hidden" name="nextPage" value="/" />
                         <input type="hidden" name="remember" value="ok" />
-                        <input type="submit" className="btn btn-primary" value="Se connecter" />
+                        <input type="submit" className="btn btn-primary" value="Se connecter" selected />
                       </form>
                     </div>
                   </div>
