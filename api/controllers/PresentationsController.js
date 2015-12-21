@@ -23,40 +23,40 @@ module.exports = {
   },
 
   showSingleView: function(req, res){
- 		Parse.Cloud.run('getPresentations', {}, {
- 			success: function(resultsAll) {
+    Parse.Cloud.run('getPresentations', {}, {
+      success: function(resultsAll) {
         Parse.Cloud.run('getPlanning', {}, {
           success: function(results) {
             res.view('singleView',{
-     					presentations: resultsAll,
+              presentations: resultsAll,
               planning: results,
               user: Parse.User.current()
-     				});
+            });
           },
           error: function(error) {
             sails.log("Error: Planning not found " + error.code + " " + error.message);
             res.view('singleView',{
-     					presentations: resultsAll
-     				});
+              presentations: resultsAll
+            });
           }
         });
- 			},
- 			error: function(error) {
- 				sails.log("Error: getPresentations " + error.code + " " + error.message);
- 				res.view('500', {error : "Error: show " + error.code + " " + error.message});
+      },
+      error: function(error) {
+        sails.log("Error: getPresentations " + error.code + " " + error.message);
+        res.view('500', {error : "Error: show " + error.code + " " + error.message});
 
- 			}
- 		});
- 	},
+      }
+    });
+  },
 
   gotopresentation: function(req, res){
-   sails.log(req.param('lat'));
-   sails.log(req.param('long'));
-   res.view('Presentations/gotopresentation',{
-     lat: req.param('lat'),
-     long: req.param('long')
-   });
- },
+    sails.log(req.param('lat'));
+    sails.log(req.param('long'));
+    res.view('Presentations/gotopresentation',{
+      lat: req.param('lat'),
+      long: req.param('long')
+    });
+  },
 
   //TODELETE
   gotoNotCloudCode: function(req, res){
@@ -181,67 +181,152 @@ module.exports = {
     });
   },
 
-
-    create: function(req, res){
-      res.view('Presentations/create', {
-        layout: 'Admin/admin'
-      })
-    },
-
-    edit: function(req, res){
-      Parse.Cloud.run('getPresentations', {}, {
-        success: function(results) {
-          res.view(null,{
-            presentations: results,
-            layout: 'Admin/admin'
-          });
-        },
-        error: function(error) {
-          sails.log("[Edit] Error: getPresentations " + error.code + " " + error.message);
-          res.view('500', {error : "Error editing Presentation " + error.code + " " + error.message});
+  uploadPost: function(req, res){
+    var name = req.param('name');
+    var file = req.param('image');
+    var file2 = req.file('image');
+    var imageEdited = req.param('imageEdited');
+    var cache = [];
+    var a = JSON.stringify(file2, function(key, value) {
+      if (typeof value === 'object' && value !== null) {
+        if (cache.indexOf(value) !== -1) {
+          // Circular reference found, discard key
+          return;
         }
-      });
-    },
-
-    getPresentations: function(req, res){
-      Parse.Cloud.run('getPresentations', {}, {
-        success: function(results) {
-          return res.json(results);
-        },
-        error: function(error) {
-          res.view('500', {error : "Error getPresentations for React " + error.code + " " + error.message});
-        }
-      });
-    },
-
-    uploadPost: function(req, res){
-      var image = req.param('file');
-      sails.log("Params: image: "+image);
-    },
-
-    editPost: function(req,res){
-      if (req.wantsJSON){
-        var name = req.param('name');
-        var start = req.param('start');
-        var end = req.param('end');
-        var id = req.param('id');
-        sails.log("Params: name: "+name+" id: "+id+" start: "+ start+" end: "+end);
-        Parse.Cloud.run('updatePresentation', {name: name, id: id, start: start, end: end}, {
-          success: function(results) {
-            sails.log("success to edit presentation, results: "+results);
-            //return res.redirect('/presentations/edit');
-            sails.log(results);
-            return res.json(results);
-          },
-          error: function(error) {
-            sails.log("[Edit] Error: updatePresentation " + error.code + " " + error.message);
-            res.view('500', {error : "Error: Unable to edit this post " + error.code + " " + error.message});
-          }
-        });
-      } else {
-        sails.log("editPost, it's not a json ...")
-        res.view('500', {error : "Error: editPost " + error.code + " " + error.message});
+        // Store value in our collection
+        cache.push(value);
       }
-    },
+      return value;
+    });
+    cache = null;
+    sails.log("JSON: "+a);
+    sails.log("Image edited: "+imageEdited);
+    sails.log("Params: name: "+name);
+    sails.log("Params: image: "+file2);
+    file2.upload(function onUploadComplete (err, files) {
+      if (err) return res.redirect('/500');;
+      var file = files[0];
+      if (file !== undefined && imageEdited == true){
+        var fileName = file.filename;
+        sails.log("Params: fileName: "+fileName);
+        var fileSize = file.size;
+        if (fileSize > 0){
+          sails.log("File size = " + fileSize);
+          var fs = require('fs');
+          var fileData = fs.readFileSync(filePath);
+          fileData = Array.prototype.slice.call(new Buffer(fileData), 0);
+          var newFile = new Parse.File(fileName, fileData);
+        } else {
+          sails.log("file undefined or image edited == false");
+        }
+      }
+    });
+  },
 
-  };
+  create: function(req, res){
+    res.view('Presentations/create', {
+      layout: 'Admin/admin'
+    })
+  },
+
+  edit: function(req, res){
+    Parse.Cloud.run('getPresentations', {}, {
+      success: function(results) {
+        res.view(null,{
+          presentations: results,
+          layout: 'Admin/admin'
+        });
+      },
+      error: function(error) {
+        sails.log("[Edit] Error: getPresentations " + error.code + " " + error.message);
+        res.view('500', {error : "Error editing Presentation " + error.code + " " + error.message});
+      }
+    });
+  },
+
+  getPresentations: function(req, res){
+    Parse.Cloud.run('getPresentations', {}, {
+      success: function(results) {
+        return res.json(results);
+      },
+      error: function(error) {
+        res.view('500', {error : "Error getPresentations for React " + error.code + " " + error.message});
+      }
+    });
+  },
+
+
+  editPost: function(req,res){
+    if (req.wantsJSON){
+      var name = req.param('name');
+      var start = req.param('start');
+      var end = req.param('end');
+      var id = req.param('id');
+      var image = req.file('image');
+      var imageEdited = req.param('imageEdited');
+      sails.log("Params: name: "+name+" id: "+id+" start: "+ start+" end: "+end);
+      sails.log("image: "+image);
+      sails.log("Image edited: "+imageEdited);
+
+      image.upload(function onUploadComplete (err, files) {
+        sails.log("Je suis direct apres image.upload");
+        if (err) return res.redirect('/500');;
+        var file = files[0];
+        sails.log("file: "+file);
+        if (imageEdited == "true"){
+          sails.log("I'm in imageEdited");
+          if (file !== undefined){
+          var filePath = file.fd;
+          var fileName = file.filename;
+          sails.log("Params: fileName: "+fileName);
+          var fileSize = file.size;
+          sails.log("File size = " + fileSize);
+          if (fileSize > 0){
+            sails.log("File size = " + fileSize);
+            var fs = require('fs');
+            var fileData = fs.readFileSync(filePath);
+            fileData = Array.prototype.slice.call(new Buffer(fileData), 0);
+            var newFile = new Parse.File(fileName, fileData);
+            Parse.Cloud.run('updatePresentation', {name: name, id: id, start: start, end: end, file: fileData, fileName: fileName, imageEdited: imageEdited}, {
+              success: function(results) {
+                sails.log("success to edit presentation, results: "+results);
+                //return res.redirect('/presentations/edit');
+                //sails.log(results);
+                return res.json(results);
+              },
+              error: function(error) {
+                sails.log("[Edit image edited == true] Error: updatePresentation " + error.code + " " + error.message);
+                res.view('500', {error : "Error: Unable to edit this post " + error.code + " " + error.message});
+              }
+            });
+          } else {
+            sials.log('fileSize <= 0');
+          }
+        } else {
+          sails.log("file undefined");
+        }
+      } else {
+          sails.log("image edited == false");
+          Parse.Cloud.run('updatePresentation', {name: name, id: id, start: start, end: end, imageEdited: imageEdited}, {
+            success: function(results) {
+              sails.log("success to edit presentation, results: "+results);
+              //return res.redirect('/presentations/edit');
+              //sails.log(results);
+              return res.json(results);
+            },
+            error: function(error) {
+              sails.log("[Edit image edited == false] Error: updatePresentation " + error.code + " " + error.message);
+              res.view('500', {error : "Error: Unable to edit this post " + error.code + " " + error.message});
+            }
+          });
+
+        }
+      });
+
+    } else {
+      sails.log("editPost, it's not a json ...")
+      res.view('500', {error : "Error: editPost " + error.code + " " + error.message});
+    }
+  },
+
+};

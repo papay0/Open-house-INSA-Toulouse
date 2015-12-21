@@ -1,3 +1,7 @@
+/*
+    browserify -t reactify assets/React/edit.js -o assets/React/editBrowserified.js
+*/
+
 var Table = ReactBootstrap.Table;
 var Button = ReactBootstrap.Button;
 var Image = ReactBootstrap.Image;
@@ -150,28 +154,22 @@ const EditModal = React.createClass({
       styleButton : "primary",
       alertVisible: false,
       messageError: "",
-      files: [this.props.image]
+      files: [this.props.image],
+      imageEdited: false
     };
   },
   save: function(){
-    var req = request.post('/presentations/uploadImage');
     var file = this.state.files[0];
-    //alert('file name: '+file.name);
-    req.attach(file.name, file);
-    req.end(function(err, res){
-      //alert('err: '+err);
-    });
 
-
-    var fdImage = new FormData();
-    fdImage.append('image', this.state.files[0]);
-    //alert(JSON.stringify(this.state.files[0]));
     var fd = new FormData();
     fd.append('name', this.state.name);
     fd.append('start', this.state.start);
     fd.append('end', this.state.end);
     fd.append('id', this.state.id);
-    console.log('FormData: '+JSON.stringify(fd));
+    fd.append('imageEdited', this.state.imageEdited);
+    fd.append('image', file);
+    alert('image edited ?'+this.state.imageEdited);
+    //console.log('FormData: '+JSON.stringify(fd));
     var data2 = {
       file: file
     }
@@ -181,10 +179,13 @@ const EditModal = React.createClass({
       end: this.state.end,
       id: this.state.id
     };
+
     $.ajax({
-      url: '/presentations/uploadImage',
+      url: '/presentations/edit',
       type: 'POST',
-      data: data2,
+      data: fd,
+      dataType: 'json',
+      cache: false,
       processData: false,
       contentType: false,
       success: function(data) {
@@ -238,12 +239,17 @@ const EditModal = React.createClass({
   onDrop: function (files) {
     console.log('Received files: ', files);
     console.log('Received file: ', files[0]);
+    this.setState({
+      imageEdited: true
+    });
       this.setState({
         files: files
       });
+      console.log('ImageEdited: '+this.state.imageEdited);
     },
     onOpenClick: function () {
       this.refs.dropzone.open();
+      console.log('ImageEdited onOpenClick: '+this.state.imageEdited);
     },
   handleChangeImage: function(event) {
    console.log('Selected file:', event.target.files[0]);
