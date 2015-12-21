@@ -168,7 +168,7 @@ Parse.Cloud.define("updatePresentation", function(request, response) {
 							response.success("[updatePresentation --> with file]  File saved");
 						},
 						 error: function(file, error){
-							 response.error("[ERROR][updatePresentation --> with file] Impossible de save le file "+error.message);
+							 response.error("[ERROR][updatePresentation --> with file] Impossible de save le file "+error);
 							console.log("[updatePresentation --> with file] Error upload = "+error);
 						}
 					}).then(function(theFile){
