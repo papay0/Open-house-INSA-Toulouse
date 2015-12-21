@@ -29,13 +29,14 @@
           success: function(results) {
             res.view('singleView',{
      					presentations: resultsAll,
-              planning: results
+              planning: results,
+              user: Parse.User.current()
      				});
           },
           error: function(error) {
             sails.log("Error: Planning not found " + error.code + " " + error.message);
             res.view('singleView',{
-     					presentations: resultsAll,
+     					presentations: resultsAll
      				});
           }
         });
@@ -46,6 +47,15 @@
 
  			}
  		});
+ 	},
+
+  gotopresentation: function(req, res){
+ 		sails.log(req.param('lat'));
+ 		sails.log(req.param('long'));
+    res.view('Presentations/gotopresentation',{
+      lat: req.param('lat'),
+      long: req.param('long')
+    });
  	},
 
  	//TODELETE

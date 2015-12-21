@@ -40,6 +40,29 @@ function initMap(){
   }
 }
 
+function pinpoint(latitude, longitude, title) {
+  // Create a map object and specify the DOM element for display.
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: parseFloat(latitude), lng: parseFloat(longitude)},
+    scrollwheel: false,
+    zoom: 17
+  });
+  var marker = new google.maps.Marker({
+    position: {lat: parseFloat(latitude), lng: parseFloat(longitude)},
+    map: map,
+    title: title
+  });
+  marker.setMap(map);
+  marker.addListener('click', toggleBounce);
+  function toggleBounce() {
+    if (marker.getAnimation() !== null) {
+      marker.setAnimation(null);
+    } else {
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
+  }
+}
+
 function setMap(maLatitude, maLongitude) {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: maLatitude, lng: maLongitude},

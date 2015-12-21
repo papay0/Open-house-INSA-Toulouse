@@ -46,6 +46,14 @@
       }
     },
 
+    'get /gotopresentation': {
+        controller: 'PresentationsController',
+        action: 'gotopresentation',
+        locals: {
+          layout: 'singleViewLayout'
+        }
+    },
+
     '/': {
         controller: 'PresentationsController',
         action: 'show'
