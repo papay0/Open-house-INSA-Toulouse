@@ -11,12 +11,6 @@
     }
   });
 
-  var LoginButton = React.createClass({
-    render:function(){
-        return <a className="btn btn-default" type="submit" href="login" style={{position:'fixed', top:'5px', right:'5px'}}>Login</a>
-    }
-  });
-
   var AddButton = React.createClass({
     addToPresentations:function(){
       var updPlann = this.props.updatePlanning;
@@ -98,9 +92,9 @@
       if(this.props.planning){
         button = <RemoveButton id={this.props.id} removeFromPlanning={this.props.removeFromPlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description}/>;
       }else{
-        <% if(typeof user !== 'undefined'){ %>
+        if(connected){
           button = <AddButton id={this.props.id} updatePlanning={this.props.updatePlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description}/>;
-        <%}%>
+        }
       }
       var idDivButton = this.props.planning+'button'+this.props.id;
       return (
@@ -150,6 +144,9 @@
       $('.collapse').collapse('hide');
       $('#'+this.props.planning+this.props.id).collapse('toggle');
       pinpoint(this.props.lat, this.props.long, this.props.name);
+      if(!connected){
+        $('#alertConnect').collapse('show');
+      }
     },
     render:function(){
       var hashId = "#"+this.props.id;
@@ -201,6 +198,7 @@
         );
     }
   });
+
   var Map = React.createClass({
     render:function(){
         return(
@@ -238,7 +236,7 @@
       planningIn.pop(planning);
       idPlanning.pop(planning.id);
       this.setState({
-          planning: planningIn
+          planniéng: planningIn
       })
     },
     getInitialState:function(){
@@ -302,11 +300,109 @@
       <% })%>
     <% } %>
   ]
+
+  <% if(typeof user !== 'undefined'){ %>
+    var connected = true;
+  <% }else{ %>
+    var connected = false;
+  <%  } %>
+
+  var AlertConnect = React.createClass({
+    render:function(){
+        return(
+          <div id="alertConnect" className="alert alert-info alert-dismissible centered collapse" role="alert" style={{position:'absolute',height:'30px',width:'90%',left:'5%',bottom:'5px',paddingBottom:'3px',paddingTop:'3px'}}>
+            <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Connection : </strong> Vous pouvez créer votre compte et vous connecter pour composer votre planning et le retrouver le jour de la journée portes ouvertes.
+          </div>
+        );
+    }
+  });
+
+  var LoginButton = React.createClass({
+    render:function(){
+      var toShow;
+      if(connected){
+        toShow='btn btn-primary hidden';
+      }else{
+        toShow='btn btn-primary';
+      }
+        return (
+          <button type="button" className={toShow} style={{position:'fixed', top:'5px', right:'5px'}} data-toggle="modal" data-target="#myModal">
+            Connection / Enregistrement
+          </button>
+        )
+    }
+  });
+
+  var LogoutButton = React.createClass({
+    render:function(){
+      var toShow;
+      if(connected){
+        toShow='btn btn-primary';
+      }else{
+        toShow='btn btn-primary hidden';
+      }
+        return (
+          <a type="button" className={toShow} style={{position:'fixed', top:'5px', right:'5px'}} href="/logout">
+            Se déconnecter
+          </a>
+        )
+    }
+  });
+
+  var ConnectionModal = React.createClass({
+    changed:function(){
+      $('.hiddenmail').val(this.refs.mailAddress.value);
+    },
+    render:function(){
+        return(
+          <div className="modal fade" id="myModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 className="modal-title" id="myModalLabel">Connection / Enregistrement</h4>
+                </div>
+                <div className="modal-body">
+                  <p> <strong>Connection : </strong> Vous pouvez créer votre compte et vous connecter pour composer votre planning et le retrouver le jour de la journée portes ouvertes.</p>
+                  <input type="email" className="form-control" ref="mailAddress" placeholder="Adresse mail" onChange={this.changed} />
+                </div>
+                <div className="modal-footer">
+                  <div className="row">
+                    <div className="col-xs-3">
+                      <button type="button" className="btn btn-default" data-dismiss="modal">Fermer</button>
+                    </div>
+                    <div className='col-xs-4'>
+                      <form role="form" method="POST" action="/register">
+                        <input className='hiddenmail' type='hidden' name='email' value="dfgdfgdfgdf" />
+                        <input type="submit" className="btn btn-primary" value="S'enregistrer" />
+                      </form>
+                    </div>
+                    <div className="col-xs-4">
+                      <form role="form" method="POST" action="/login">
+                        <input className='hiddenmail' type='hidden' name='email' value="dfgdfgdfgdf" />
+                        <input type="hidden" name="nextPage" value="/" />
+                        <input type="hidden" name="remember" value="ok" />
+                        <input type="submit" className="btn btn-primary" value="Se connecter" />
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+    }
+  });
+
 ReactDOM.render(
   <div className="row fullHeight">
     <LeftMenu data={presentations} planning={planning} />
     <Map/>
     <LoginButton />
+    <AlertConnect />
+    <ConnectionModal />
+    <LogoutButton />
   </div>,
   document.getElementById('content')
 );

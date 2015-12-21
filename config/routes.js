@@ -38,13 +38,6 @@
     *                         Presentations                                    *
     *                                                                          *
     ***************************************************************************/
-    'get /test': {
-      controller: 'PresentationsController',
-      action: 'showSingleView',
-      locals: {
-        layout: 'singleViewLayout'
-      }
-    },
 
     'get /gotopresentation': {
         controller: 'PresentationsController',
@@ -54,9 +47,19 @@
         }
     },
 
+    'get /errorLogin': {
+        view: 'Auth/errLogin',
+        locals: {
+          layout: 'singleViewLayout'
+        }
+    },
+
     '/': {
-        controller: 'PresentationsController',
-        action: 'show'
+      controller: 'PresentationsController',
+      action: 'showSingleView',
+      locals: {
+        layout: 'singleViewLayout'
+      }
     },
 
     'get /presentations': {
