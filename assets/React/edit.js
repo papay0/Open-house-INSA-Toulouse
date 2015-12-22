@@ -168,7 +168,6 @@ const EditModal = React.createClass({
     fd.append('id', this.state.id);
     fd.append('imageEdited', this.state.imageEdited);
     fd.append('image', file);
-    alert('image edited ?'+this.state.imageEdited);
     //console.log('FormData: '+JSON.stringify(fd));
     var data2 = {
       file: file

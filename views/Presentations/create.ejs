@@ -4,6 +4,16 @@
 	<form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data" action="/presentations/createPost">
 		<fieldset>
 
+			<% if(flash && flash.err) { %>
+				<ul class="alert alert-danger">
+						<p style="color : blue;"><%- JSON.stringify(flash.err) %></p>
+				</ul>
+				<% } else if (flash && flash.success){ %>
+					<ul class="alert alert-success">
+							<p style="color : blue;"><%- JSON.stringify(flash.success) %></p>
+					</ul>
+					<% } %>
+
 			<!-- Text input-->
 			<div class="container">
 				<legend>Nom de la presentation</legend>
@@ -43,11 +53,21 @@
 				</div>
 			</div>
 			<div class="container">
+				<legend>Description</legend>
+				<div class='col-md-5'>
+					<div class="form-group">
+						<div class='input-group date' id='datetimepicker7'>
+  						<textarea class="form-control" maxlength="245" name="description" type="text" cols="70" rows="5" id="description" placeholder="Description de la présentation" required=""></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
 				<legend>Image de présentation</legend>
 				<div class='col-md-5'>
 					<div class="form-group">
 						<div class='input-group date' id='datetimepicker6'>
-							<input type="file" name="picture" id="picture"></input>
+							<input type="file" name="picture" id="picture" required=""></input>
 						</div>
 					</div>
 				</div>

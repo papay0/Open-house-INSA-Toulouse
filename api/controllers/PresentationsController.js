@@ -146,7 +146,7 @@ module.exports = {
     });
   },
 
-  createPost: function(req, res){
+  createPostCloudCode: function(req, res){
     sails.log("PresentationsController --> create");
     var name = req.param('name');
     var start = req.param('start');
@@ -182,6 +182,86 @@ module.exports = {
       }
     });
   },
+
+  createPost: function(req, res){
+    sails.log("PresentationsController --> create");
+    if (req.param('name') && req.param('start') && req.param('end') && req.param('description') && req.file('picture')){
+
+      var name = req.param('name');
+      var start = new Date(req.param('start'));
+      var end = new Date(req.param('end'));
+      var description = req.param('description');
+      var fileElement =  req.file('picture');
+      sails.log("Info form: "+name+" "+start+" "+end);
+      var geoPointTest = new Parse.GeoPoint();
+      var Presentation = Parse.Object.extend("Presentations");
+      var presentation = new Presentation();
+      presentation.set("name", name);
+      presentation.set("start", start);
+      presentation.set("end", end);
+      presentation.set("description", description);
+      presentation.set("location", geoPointTest);
+      fileElement.upload(function onUploadComplete (err, files) {
+        if (err) return res.redirect('/500');;
+        var file = files[0];
+        if (file !== undefined){
+          sails.log("info file = ");
+          sails.log(file);
+          var filePath = file.fd;
+          var fileName = file.filename;
+          var fileSize = file.size;
+          var contentType = file.type;
+          if (fileSize > 0){
+            sails.log("File size = " + fileSize);
+            var fs = require('fs');
+            var fileData = fs.readFileSync(filePath);
+            fileData = Array.prototype.slice.call(new Buffer(fileData), 0);
+            var newFile = new Parse.File(fileName, fileData);
+            newFile.save({
+              success:function(){
+                console.log("File upload Successfully");
+                //response.success("File upload Successfully");
+              }, error: function(file, error){
+                console.log("Error upload = "+error);
+                res.view('500', {error : "Error: Unable to save this newFile " + error.code + " " + error});
+                //response.error("Error upload = "+error);
+              }
+            }).then(function(theFile){
+              presentation.set("image", theFile);
+              presentation.save(null, {
+                success: function(presentation) {
+                  req.session.flash = {
+                    success: "Presentation added successfully"
+                  }
+                  res.locals.flash = _.clone(req.session.flash);
+                  req.session.flash = {};
+                  return res.redirect('/presentations');
+                  //response.success("Presentation added: "+presentation);
+                },
+                error: function(presentation, error) {
+                  req.session.flash = {
+                    err: "Error can't upload picture, error code: "+error.code+" details: "+error
+                  }
+                  res.locals.flash = _.clone(req.session.flash);
+                  return res.redirect('/presentations');
+                  //res.view('500', {error : "Error: Unable to add this presentation " + error.code + " " + error});
+                  //response.error("Failed to add presentation Object in Parse database: "+error.message);
+                }
+              });
+            });
+          }
+        }
+      });
+    } else {
+      req.session.flash = {
+        err: "Missing arguments"
+      }
+      res.locals.flash = _.clone(req.session.flash);
+      return res.redirect('/presentations');
+    }
+  },
+
+
 
   uploadPost: function(req, res){
     var name = req.param('name');
@@ -226,6 +306,8 @@ module.exports = {
   },
 
   create: function(req, res){
+    res.locals.flash = _.clone(req.session.flash);
+    req.session.flash = {};
     res.view('Presentations/create', {
       layout: 'Admin/admin'
     })
@@ -261,23 +343,129 @@ module.exports = {
   editPost: function(req,res){
     if (req.wantsJSON){
       var name = req.param('name');
-      var start = req.param('start');
-      var end = req.param('end');
+      var start = new Date(req.param('start'));
+      var end = new Date(req.param('end'));
       var id = req.param('id');
       var image = req.file('image');
       var imageEdited = req.param('imageEdited');
       sails.log("Params: name: "+name+" id: "+id+" start: "+ start+" end: "+end);
       sails.log("image: "+image);
       sails.log("Image edited: "+imageEdited);
+      var presentations = Parse.Object.extend("Presentations");
+      var query = new Parse.Query(presentations);
 
       image.upload(function onUploadComplete (err, files) {
         sails.log("Je suis direct apres image.upload");
         if (err) return res.redirect('/500');;
         var file = files[0];
-        sails.log("file: "+file);
+        var filePath = file.fd;
+        var fileName = file.filename;
+        var fileSize = file.size;
+        var contentType = file.type;
+        var fs = require('fs');
+        var fileData = fs.readFileSync(filePath);
+        fileData = Array.prototype.slice.call(new Buffer(fileData), 0);
+        //var fileData = request.params.file;
+        //var fileName = request.params.fileName;
+        var newFile = new Parse.File(fileName, fileData);
+         sails.log("file ouside: ");
+         sails.log(file);
+        var that = this;
         if (imageEdited == "true"){
           sails.log("I'm in imageEdited");
-          if (file !== undefined){
+          query.get(id, {
+            success: function(object) {
+              sails.log("file inside: ");
+              sails.log(that.file);
+              sails.log("name: "+name);
+              object.set("name", name);
+              object.set("start", start);
+              object.set("end", end);
+
+              console.log("[updatePresentation --> with file] Name of my file updated: "+fileName);
+              console.log("[updatePresentation --> with file] info file: "+ file);
+              newFile.save({
+                success:function(){
+                  console.log("[updatePresentation --> with file] File uploaded Successfully");
+                  //return res.json();
+                },
+                error: function(file, error){
+                  res.view('500', {error : "Failed to save the file presentation Object in Parse database: "+error.message});
+                  console.log("[updatePresentation --> with file] Error upload = "+error);
+                }
+              }).then(function(theFile){
+                object.set("image", theFile);
+                object.save(null, {
+                  success: function(presentation) {
+                    console.log("[Update presentation --> with file]] File updated Successfully");
+                    return res.json(presentation);
+                  },
+                  error: function(presentation, error) {
+                    sails.log("I'm in error file.save (then), error: "+error.code+" error message: "+error.message);
+                    res.view('500', {error : "Failed to update presentation Object in Parse database: "+error.message});
+                  }
+                });
+              });
+            },
+            error: function(object, error) {
+              response.error("Cannot find object by id");
+            }
+          });
+    } else {
+      sails.log("image edited == false");
+      query.get(id, {
+        success: function(object) {
+          sails.log("I'm in success get by id, presentation: "+JSON.stringify(object));
+          object.set("name", name);
+          object.set("start", start);
+          object.set("end", end);
+          object.save(null, {
+            success: function(presentation) {
+              sails.log("I'm in success object. save");
+              return res.json(presentation);
+            },
+            error: function(presentation, error) {
+              sails.log("I'm in error object. save, error: "+error.code+" error message: "+error.message);
+              res.view('500', {error : "Failed to update presentation Object in Parse database: "+error.message});
+              //response.error("Failed to update presentation Object in Parse database: "+error.message);
+            }
+          });
+        },
+        error: function(object, error) {
+          res.view('500', {error : "Cannot find object by id"});
+          //response.error("Cannot find object by id");
+        }
+      });
+    }
+  });
+
+} else {
+  sails.log("editPost, it's not a json ...")
+  res.view('500', {error : "Error: editPost " + error.code + " " + error.message});
+}
+},
+
+editPostCloudCode: function(req,res){
+  if (req.wantsJSON){
+    var name = req.param('name');
+    var start = req.param('start');
+    var end = req.param('end');
+    var id = req.param('id');
+    var image = req.file('image');
+    var imageEdited = req.param('imageEdited');
+    sails.log("Params: name: "+name+" id: "+id+" start: "+ start+" end: "+end);
+    sails.log("image: "+image);
+    sails.log("Image edited: "+imageEdited);
+
+    image.upload(function onUploadComplete (err, files) {
+      sails.log("Je suis direct apres image.upload");
+      if (err) return res.redirect('/500');;
+      var file = files[0];
+      sails.log("file: ");
+      sails.log(file);
+      if (imageEdited == "true"){
+        sails.log("I'm in imageEdited");
+        if (file !== undefined){
           var filePath = file.fd;
           var fileName = file.filename;
           sails.log("Params: fileName: "+fileName);
@@ -308,27 +496,27 @@ module.exports = {
           sails.log("file undefined");
         }
       } else {
-          sails.log("image edited == false");
-          Parse.Cloud.run('updatePresentation', {name: name, id: id, start: start, end: end, imageEdited: imageEdited}, {
-            success: function(results) {
-              sails.log("success to edit presentation, results: "+results);
-              //return res.redirect('/presentations/edit');
-              //sails.log(results);
-              return res.json(results);
-            },
-            error: function(error) {
-              sails.log("[Edit image edited == false] Error: updatePresentation " + error.code + " " + error.message);
-              res.view('500', {error : "Error: Unable to edit this post " + error.code + " " + error.message});
-            }
-          });
+        sails.log("image edited == false");
+        Parse.Cloud.run('updatePresentation', {name: name, id: id, start: start, end: end, imageEdited: imageEdited}, {
+          success: function(results) {
+            sails.log("success to edit presentation, results: "+results);
+            //return res.redirect('/presentations/edit');
+            //sails.log(results);
+            return res.json(results);
+          },
+          error: function(error) {
+            sails.log("[Edit image edited == false] Error: updatePresentation " + error.code + " " + error.message);
+            res.view('500', {error : "Error: Unable to edit this post " + error.code + " " + error.message});
+          }
+        });
 
-        }
-      });
+      }
+    });
 
-    } else {
-      sails.log("editPost, it's not a json ...")
-      res.view('500', {error : "Error: editPost " + error.code + " " + error.message});
-    }
-  },
+  } else {
+    sails.log("editPost, it's not a json ...")
+    res.view('500', {error : "Error: editPost " + error.code + " " + error.message});
+  }
+},
 
 };
