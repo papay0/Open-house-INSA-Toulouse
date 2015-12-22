@@ -57,10 +57,27 @@ Parse.Cloud.define("getPlanning", function(req, res){
 }),
 
 Parse.Cloud.define("deletePresentation", function(req, res){
-	if(req.user && request.user.get('admin')){
-
+	if(req.user && req.user.get('admin')){
+		var id = req.params.id;
+		var presentations = Parse.Object.extend("Presentations");
+		var query = new Parse.Query(presentations);
+		query.get(id, {
+			success: function(object) {
+				object.destroy({
+					success: function(myObject) {
+						res.success("Presentation deleted: "+JSON.stringify(myObject));
+					},
+					error: function(myObject, error) {
+						res.error("[ERROR] Issue to delete object: code: "+error.code+" message: "+error.message);
+					}
+				});
+			},
+			error: function(object, error) {
+				res.error("Cannot find object by id");
+			}
+		});
 	}else{
-		res.error("You are not logged in or admin "+error.message);
+		res.error("You are not logged in or admin ");
 	}
 }),
 
@@ -160,43 +177,43 @@ Parse.Cloud.define("updatePresentation", function(request, response) {
 					}
 				});
 			} else {
-			query.get(id, {
-				success: function(object) {
-					object.set("name", name);
-					object.set("start", start);
-					object.set("end", end);
-					var fileData = request.params.file;
-					var fileName = request.params.fileName;
-					var file = new Parse.File(fileName, fileData);
-					console.log("[updatePresentation --> with file] Name of my file updated: "+fileName);
-					console.log("[updatePresentation --> with file] info file: "+ file);
-					file.save({
-						success:function(){
-							console.log("[updatePresentation --> with file] File uploaded Successfully");
-							response.success("[updatePresentation --> with file]  File saved");
-						},
-						 error: function(file, error){
-							 response.error("[ERROR][updatePresentation --> with file] Impossible de save le file "+error);
-							console.log("[updatePresentation --> with file] Error upload = "+error);
-						}
-					}).then(function(theFile){
-						object.set("image", theFile);
-						object.save(null, {
-							success: function(presentation) {
-								console.log("[Update presentation --> with file]] File updated Successfully");
-								response.success(presentation);
+				query.get(id, {
+					success: function(object) {
+						object.set("name", name);
+						object.set("start", start);
+						object.set("end", end);
+						var fileData = request.params.file;
+						var fileName = request.params.fileName;
+						var file = new Parse.File(fileName, fileData);
+						console.log("[updatePresentation --> with file] Name of my file updated: "+fileName);
+						console.log("[updatePresentation --> with file] info file: "+ file);
+						file.save({
+							success:function(){
+								console.log("[updatePresentation --> with file] File uploaded Successfully");
+								response.success("[updatePresentation --> with file]  File saved");
 							},
-							error: function(presentation, error) {
-								response.error("[updatePresentation --> with file] Failed to update presentation Object in Parse database: "+error.message);
+							error: function(file, error){
+								response.error("[ERROR][updatePresentation --> with file] Impossible de save le file "+error);
+								console.log("[updatePresentation --> with file] Error upload = "+error);
 							}
+						}).then(function(theFile){
+							object.set("image", theFile);
+							object.save(null, {
+								success: function(presentation) {
+									console.log("[Update presentation --> with file]] File updated Successfully");
+									response.success(presentation);
+								},
+								error: function(presentation, error) {
+									response.error("[updatePresentation --> with file] Failed to update presentation Object in Parse database: "+error.message);
+								}
+							});
 						});
-					});
-				},
-				error: function(object, error) {
-					response.error("Cannot find object by id");
-				}
-			});
-		}
+					},
+					error: function(object, error) {
+						response.error("Cannot find object by id");
+					}
+				});
+			}
 		} else {
 			response.error("Not enough arguments");
 		}

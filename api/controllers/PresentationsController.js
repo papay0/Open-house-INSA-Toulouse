@@ -234,9 +234,8 @@ module.exports = {
                     success: "Presentation added successfully"
                   }
                   res.locals.flash = _.clone(req.session.flash);
-                  req.session.flash = {};
+                  sails.log("Success to add presentation, I redirect. "+ JSON.stringify(res.locals.flash));
                   return res.redirect('/presentations');
-                  //response.success("Presentation added: "+presentation);
                 },
                 error: function(presentation, error) {
                   req.session.flash = {
@@ -257,6 +256,7 @@ module.exports = {
         err: "Missing arguments"
       }
       res.locals.flash = _.clone(req.session.flash);
+      sails.log("Error to add presentation, I redirect. "+ JSON.stringify(res.locals.flash));
       return res.redirect('/presentations');
     }
   },
