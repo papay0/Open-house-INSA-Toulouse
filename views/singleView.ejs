@@ -16,26 +16,25 @@
       var updPlann = this.props.updatePlanning;
       var addb = this;
       var id = 'add'+this.props.id;
-      $('#'+id).attr('class', 'glyphicon glyphicon-refresh');
+      var addplanning ={name:addb.props.name,
+      id: addb.props.id,
+      description: addb.props.description,
+      start: addb.props.start,
+      end: addb.props.end,
+      lat: addb.props.lat,
+      long: addb.props.long,
+      imgUrl: addb.props.imgUrl,
+      planning:true};
+      updPlann(addplanning);
+      addb.props.updateVerifStatus();
+      $('#falsebutton'+addb.props.id).attr('class', 'hidden');
       $.ajax({
         url : '/suscribePresentation',
         type : 'POST',
         data : 'presentationId='+this.props.id,
         dataType : 'html',
         success : function(code_html, statut){
-          $('#'+id).attr('class', 'glyphicon glyphicon-ok');
-          var addplanning ={name:addb.props.name,
-          id: addb.props.id,
-          description: addb.props.description,
-          start: addb.props.start,
-          end: addb.props.end,
-          lat: addb.props.lat,
-          long: addb.props.long,
-          imgUrl: addb.props.imgUrl,
-          planning:true};
-          updPlann(addplanning);
-          addb.props.updateVerifStatus();
-          $('#falsebutton'+addb.props.id).attr('class', 'hidden');
+
         },
         error : function(resultat, statut, erreur){
           $('#'+id).attr("class", "glyphicon glyphicon-remove");
@@ -55,27 +54,28 @@
       var removeButtonObject = this;
       var id = 'add'+this.props.id;
       $('#'+id).attr('class', 'glyphicon glyphicon-refresh');
+      $('#'+id).attr('class', 'glyphicon glyphicon-ok');
+      var rmvplanning ={name:removeButtonObject.props.name,
+      id: removeButtonObject.props.id,
+      description: removeButtonObject.props.description,
+      start: removeButtonObject.props.start,
+      end: removeButtonObject.props.end,
+      lat: removeButtonObject.props.lat,
+      long: removeButtonObject.props.long,
+      imgUrl: removeButtonObject.props.imgUrl,
+      planning:true};
+      console.log('toberemove : '+rmvplanning.name)
+      rmvPlann(rmvplanning);
+      removeButtonObject.props.updateVerifStatus();
+      $('#falsebutton'+removeButtonObject.props.id).find('span').attr('class', 'glyphicon glyphicon-plus');
+      $('#falsebutton'+removeButtonObject.props.id).attr('class', 'show');
       $.ajax({
         url : '/removePresentation',
         type : 'POST',
         data : 'presentationId='+this.props.id,
         dataType : 'html',
         success : function(code_html, statut){
-          $('#'+id).attr('class', 'glyphicon glyphicon-ok');
-          var rmvplanning ={name:removeButtonObject.props.name,
-          id: removeButtonObject.props.id,
-          description: removeButtonObject.props.description,
-          start: removeButtonObject.props.start,
-          end: removeButtonObject.props.end,
-          lat: removeButtonObject.props.lat,
-          long: removeButtonObject.props.long,
-          imgUrl: removeButtonObject.props.imgUrl,
-          planning:true};
-          console.log('toberemove : '+rmvplanning.name)
-          rmvPlann(rmvplanning);
-          removeButtonObject.props.updateVerifStatus();
-          $('#falsebutton'+removeButtonObject.props.id).find('span').attr('class', 'glyphicon glyphicon-plus');
-          $('#falsebutton'+removeButtonObject.props.id).attr('class', 'show');
+
         },
         error : function(resultat, statut, erreur){
           $('#'+id).attr("class", "glyphicon glyphicon-remove");
@@ -270,20 +270,26 @@
       });
     },
     verifPlanning:function(){
+      console.log('verif planning');
       var startTested;
       var endTested;
       for(var i=0; i<planning.length; i++){
-        startTested = planning[i].start;
-        endTested = planning[i].end;
+        var nomTested = planning[i].name;
+        var startTested = planning[i].start;
+        var endTested = planning[i].end;
         for(var n=(i+1); n<planning.length; n++){
           var debutErr = (planning[n].start>startTested)&&(planning[n].start<endTested);
           var endErr = (planning[n].end>startTested)&&(planning[n].end<endTested);
-          if(debutErr||endErr){
-            return <ErrorValidBox />
+          var revDebutErr = (startTested>planning[n].start)&&(startTested<planning[n].end);
+          var revEndErr = (endTested>planning[n].start)&&(endTested<planning[n].end);
+          console.log(debutErr + "ee"+  endErr+"  " + planning[n].start+'-'+planning[n].end+'  '+startTested+'-'+endTested);
+          if(debutErr||endErr||revDebutErr||revEndErr){
+            var nomb = planning[n].name;
+            return <ErrorValidBox nom1={nomTested} nom2={nomb} />
           }
         }
       }
-      return <OkValidBox />
+      return null
     },
     render:function(){
         return (
@@ -312,18 +318,9 @@
   var ErrorValidBox = React.createClass({
     render:function(){
         return (
-          <div className="bs-callout bs-callout-warning">
-          Erreur !
-          </div>
-        )
-    }
-  });
-
-  var OkValidBox = React.createClass({
-    render:function(){
-        return (
-          <div className="bs-callout bs-callout-warning">
-          Ok !
+          <div id="alertConnect" className="alert alert-danger alert-dismissible centered" role="alert" >
+            <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Validation Erreur : </strong> Au moins deux évenements de votre planning se chevauchent : {this.props.nom1} et {this.props.nom2}
           </div>
         )
     }
