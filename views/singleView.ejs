@@ -34,6 +34,7 @@
           imgUrl: addb.props.imgUrl,
           planning:true};
           updPlann(addplanning);
+          addb.props.updateVerifStatus();
           $('#falsebutton'+addb.props.id).attr('class', 'hidden');
         },
         error : function(resultat, statut, erreur){
@@ -51,7 +52,7 @@
   var RemoveButton = React.createClass({
     removeToPresentations:function(){
       var rmvPlann = this.props.removeFromPlanning;
-      var addButtonObject = this;
+      var removeButtonObject = this;
       var id = 'add'+this.props.id;
       $('#'+id).attr('class', 'glyphicon glyphicon-refresh');
       $.ajax({
@@ -61,18 +62,20 @@
         dataType : 'html',
         success : function(code_html, statut){
           $('#'+id).attr('class', 'glyphicon glyphicon-ok');
-          var rmvplanning ={name:addButtonObject.props.name,
-          id: addButtonObject.props.id,
-          description: addButtonObject.props.description,
-          start: addButtonObject.props.start,
-          end: addButtonObject.props.end,
-          lat: addButtonObject.props.lat,
-          long: addButtonObject.props.long,
-          imgUrl: addButtonObject.props.imgUrl,
+          var rmvplanning ={name:removeButtonObject.props.name,
+          id: removeButtonObject.props.id,
+          description: removeButtonObject.props.description,
+          start: removeButtonObject.props.start,
+          end: removeButtonObject.props.end,
+          lat: removeButtonObject.props.lat,
+          long: removeButtonObject.props.long,
+          imgUrl: removeButtonObject.props.imgUrl,
           planning:true};
+          console.log('toberemove : '+rmvplanning.name)
           rmvPlann(rmvplanning);
-          $('#falsebutton'+addButtonObject.props.id).find('span').attr('class', 'glyphicon glyphicon-plus');
-          $('#falsebutton'+addButtonObject.props.id).attr('class', 'show');
+          removeButtonObject.props.updateVerifStatus();
+          $('#falsebutton'+removeButtonObject.props.id).find('span').attr('class', 'glyphicon glyphicon-plus');
+          $('#falsebutton'+removeButtonObject.props.id).attr('class', 'show');
         },
         error : function(resultat, statut, erreur){
           $('#'+id).attr("class", "glyphicon glyphicon-remove");
@@ -90,10 +93,10 @@
       var idDivHidden=this.props.planning+this.props.id;
       var button;
       if(this.props.planning){
-        button = <RemoveButton id={this.props.id} removeFromPlanning={this.props.removeFromPlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description}/>;
+        button = <RemoveButton updateVerifStatus={this.props.updateVerifStatus} id={this.props.id} removeFromPlanning={this.props.removeFromPlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description}/>;
       }else{
         if(connected){
-          button = <AddButton id={this.props.id} updatePlanning={this.props.updatePlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description}/>;
+          button = <AddButton updateVerifStatus={this.props.updateVerifStatus} id={this.props.id} updatePlanning={this.props.updatePlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description}/>;
         }
       }
       var idDivButton = this.props.planning+'button'+this.props.id;
@@ -182,7 +185,7 @@
                 </div>
               </a>
             </div>
-            <PresentationInfos planning={this.props.planning} id={this.props.id} removeFromPlanning={this.props.removeFromPlanning} updatePlanning={this.props.updatePlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description} />
+            <PresentationInfos updateVerifStatus={this.props.updateVerifStatus} planning={this.props.planning} id={this.props.id} removeFromPlanning={this.props.removeFromPlanning} updatePlanning={this.props.updatePlanning} start={this.props.start} end={this.props.end} imgUrl={this.props.imgUrl} lat={this.props.lat} long={this.props.long} id={this.props.id} name={this.props.name} description={this.props.description} />
           </div>
         );
     }
@@ -194,8 +197,9 @@
         var rows=[];
         var updPlann = this.props.updatePlanning;
         var rmvPlann = this.props.removeFromPlanning;
+        var updateVerifStatus = this.props.updateVerifStatus;
         this.props.data.forEach(function(presentation) {
-          rows.push(<PresentationListItem planning={presentation.planning} removeFromPlanning={rmvPlann} updatePlanning={updPlann} key={presentation.id} start={presentation.start} end={presentation.end} imgUrl={presentation.imgUrl} lat={presentation.lat} long={presentation.long} id={presentation.id} name={presentation.name} description={presentation.description} />)
+          rows.push(<PresentationListItem updateVerifStatus={updateVerifStatus} planning={presentation.planning} removeFromPlanning={rmvPlann} updatePlanning={updPlann} key={presentation.id} start={presentation.start} end={presentation.end} imgUrl={presentation.imgUrl} lat={presentation.lat} long={presentation.long} id={presentation.id} name={presentation.name} description={presentation.description} />)
         });
         //returning the table
         return(
@@ -237,21 +241,49 @@
       this.setState({
           planning: planningIn
       })
+      console.log(this.state.planning[1]);
     },
     removeFromPlanning:function(planning){
       var planningIn=this.state.planning;
-      planningIn.pop(planning);
-      idPlanning.pop(planning.id);
+      for(var i=0; i<planningIn.length; i++){
+        if(planning.name == planningIn[i].name){
+          planningIn.splice(i,1);
+          idPlanning.splice(i,1);
+        }
+      }
       this.setState({
-          planniéng: planningIn
-      })
+          planning: planningIn
+      });
+      console.log(this.state.planning.length +  " et " + planning.name + "   " +this.state.planning[0].name)
     },
     getInitialState:function(){
         return{
             query:'',
             filteredData: this.props.data,
-            planning: this.props.planning
+            planning: this.props.planning,
+            validationStatus: this.verifPlanning()
         }
+    },
+    updateVerifStatus:function(){
+      this.setState({
+          validationStatus: this.verifPlanning()
+      });
+    },
+    verifPlanning:function(){
+      var startTested;
+      var endTested;
+      for(var i=0; i<planning.length; i++){
+        startTested = planning[i].start;
+        endTested = planning[i].end;
+        for(var n=(i+1); n<planning.length; n++){
+          var debutErr = (planning[n].start>startTested)&&(planning[n].start<endTested);
+          var endErr = (planning[n].end>startTested)&&(planning[n].end<endTested);
+          if(debutErr||endErr){
+            return <ErrorValidBox />
+          }
+        }
+      }
+      return <OkValidBox />
     },
     render:function(){
         return (
@@ -262,11 +294,12 @@
               <div className="row container-fluid">
                 <SearchBox query={this.state.query} doSearch={this.doSearch}/>
                 <% if(typeof planning !== 'undefined'){ %>
+                {this.state.validationStatus}
                 <h3 style={{marginLeft:'6px'}}>Presentations sélectionnées</h3>
-                <DisplayTable data={this.state.planning} removeFromPlanning={this.removeFromPlanning}/>
+                <DisplayTable updateVerifStatus={this.updateVerifStatus} data={this.state.planning} removeFromPlanning={this.removeFromPlanning}/>
                 <%}%>
                 <h3 style={{marginLeft:'6px'}}>Toutes les présentations</h3>
-                <DisplayTable data={this.state.filteredData} updatePlanning={this.updatePlanning}/>
+                <DisplayTable updateVerifStatus={this.updateVerifStatus} data={this.state.filteredData} updatePlanning={this.updatePlanning}/>
                 <p className="centered">
                   Made with <span className="glyphicon glyphicon-heart-empty" aria-hidden="true" style={{color:'#F44336'}}></span> by LaGaArBa
                 </p>
@@ -275,6 +308,27 @@
         );
     }
   });
+
+  var ErrorValidBox = React.createClass({
+    render:function(){
+        return (
+          <div className="bs-callout bs-callout-warning">
+          Erreur !
+          </div>
+        )
+    }
+  });
+
+  var OkValidBox = React.createClass({
+    render:function(){
+        return (
+          <div className="bs-callout bs-callout-warning">
+          Ok !
+          </div>
+        )
+    }
+  });
+
   var presentations=[
     <% _.each(presentations, function (presentation) { %>
     {
