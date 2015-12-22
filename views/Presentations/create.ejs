@@ -64,6 +64,18 @@
 				</div>
 			</div>
 			<div class="container">
+				<legend>Localisation</legend>
+				<div class='col-md-5'>
+					<div class="form-group">
+						<select class="form-control" id="selectedLocation" name="selectedLocation">
+							<% _.each(locations, function (location) { %>
+			        <option value="<%= JSON.stringify(location.get('geopoint')) %>"><%= location.get('address') %></option>
+							<% }) %>
+			      </select>
+					</div>
+				</div>
+			</div>
+			<div class="container">
 				<legend>Image de présentation</legend>
 				<div class='col-md-5'>
 					<div class="form-group">

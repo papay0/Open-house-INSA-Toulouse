@@ -183,7 +183,9 @@ module.exports = {
     });
   },
 
+
   createPost: function(req, res){
+
     sails.log("PresentationsController --> create");
     if (req.param('name') && req.param('start') && req.param('end') && req.param('description') && req.file('picture')){
 
@@ -192,15 +194,19 @@ module.exports = {
       var end = new Date(req.param('end'));
       var description = req.param('description');
       var fileElement =  req.file('picture');
+      var selectedLocation = JSON.parse(req.param('selectedLocation'));
+      var lat = selectedLocation['latitude'];
+      var long = selectedLocation['longitude'];
+      sails.log("lat: "+lat+" long: "+long);
       sails.log("Info form: "+name+" "+start+" "+end);
-      var geoPointTest = new Parse.GeoPoint();
+      var geoPoint = new Parse.GeoPoint(lat, long);
       var Presentation = Parse.Object.extend("Presentations");
       var presentation = new Presentation();
       presentation.set("name", name);
       presentation.set("start", start);
       presentation.set("end", end);
       presentation.set("description", description);
-      presentation.set("location", geoPointTest);
+      presentation.set("location", geoPoint);
       fileElement.upload(function onUploadComplete (err, files) {
         if (err) return res.redirect('/500');;
         var file = files[0];
@@ -306,11 +312,21 @@ module.exports = {
   },
 
   create: function(req, res){
-    res.locals.flash = _.clone(req.session.flash);
-    req.session.flash = {};
-    res.view('Presentations/create', {
-      layout: 'Admin/admin'
-    })
+    Parse.Cloud.run('getLocations', {}, {
+      success: function(results) {
+        //sails.log("Success getLocations: "+JSON.stringify(results));
+        res.locals.flash = _.clone(req.session.flash);
+        req.session.flash = {};
+        res.view('Presentations/create', {
+          locations: results,
+          layout: 'Admin/admin'
+        })
+      },
+      error: function(error) {
+        sails.log("[create] Error: getLocations " + error.code + " " + error.message);
+        res.view('500', {error : "[--> View] Error getLocations " + error.code + " " + error.message});
+      }
+    });
   },
 
   edit: function(req, res){

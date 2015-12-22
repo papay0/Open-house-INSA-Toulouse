@@ -36,7 +36,7 @@ Parse.Cloud.define("goto", function(req, res){
 			}
 		});
 	}
-}),
+});
 
 Parse.Cloud.define("getPlanning", function(req, res){
 	if(req.user){
@@ -52,9 +52,26 @@ Parse.Cloud.define("getPlanning", function(req, res){
 			});
 		});
 	}else{
-		res.error("You are not logged in "+error.message);
+		res.error("You are not logged in ");
 	}
-}),
+});
+
+Parse.Cloud.define("getLocations", function(request, response){
+	if (request.user && request.user.get('admin')){
+		var Locations = Parse.Object.extend("Locations");
+		var query = new Parse.Query(Locations);
+		query.find({
+			success: function(results) {
+				response.success(results);
+			},
+			error: function(error) {
+				response.error(error);
+			}
+		});
+	} else {
+		response.error("You are not logged in or admin");
+	}
+});
 
 Parse.Cloud.define("deletePresentation", function(req, res){
 	if(req.user && req.user.get('admin')){
@@ -79,7 +96,7 @@ Parse.Cloud.define("deletePresentation", function(req, res){
 	}else{
 		res.error("You are not logged in or admin ");
 	}
-}),
+});
 
 Parse.Cloud.define("suscribePresentation", function(request, response){
 	if (request.user){
