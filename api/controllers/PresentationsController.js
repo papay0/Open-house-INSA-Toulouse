@@ -157,6 +157,8 @@ module.exports = {
       if (err) return res.redirect('/500');;
       var file = files[0];
       if (file !== undefined){
+        sails.log("info file = ");
+        sails.log(file);
         var filePath = file.fd;
         var fileName = file.filename;
         var fileSize = file.size;
@@ -167,7 +169,7 @@ module.exports = {
           var fileData = fs.readFileSync(filePath);
           fileData = Array.prototype.slice.call(new Buffer(fileData), 0);
           var newFile = new Parse.File(fileName, fileData);
-          Parse.Cloud.run('createPresentation', {name: name, start: start, end: end, file: fileData, fileName: fileName}, {
+          Parse.Cloud.run('createPresentation', {name: name, start: start, end: end, file: fileData, fileName: fileName, newFile: newFile}, {
             success: function(results) {
               return res.redirect('/presentations');
             },
