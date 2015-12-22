@@ -79,6 +79,11 @@
         action: 'editPost'
     },
 
+    'post /presentations/delete': {
+        controller: 'PresentationsController',
+        action: 'deletePost'
+    },
+
     'post /presentations/uploadImage': {
         controller: 'PresentationsController',
         action: 'uploadPost'

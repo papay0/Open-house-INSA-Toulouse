@@ -151,6 +151,7 @@ const EditModal = React.createClass({
       start: this.props.start,
       end: this.props.end,
       id: this.props.id,
+      description: this.props.description,
       styleButton : "primary",
       alertVisible: false,
       messageError: "",
@@ -158,7 +159,28 @@ const EditModal = React.createClass({
       imageEdited: false
     };
   },
-  save: function(){
+  delete: function() {
+    var data = {
+      id: this.state.id
+    };
+    //alert(JSON.stringify(data));
+    $.ajax({
+      url: '/presentations/delete',
+      dataType: 'json',
+      type: 'POST',
+      data: data,
+      success: function(data) {
+        this.setState({ show: false});
+        this.changeStyleButton("success");
+      }.bind(this),
+      error: function(res, status, err) {
+        this.changeStyleButton("danger");
+        this.setState({messageError: "Something went wrong: res: "+res+" status "+status+" error "+err})
+        this.setState({alertVisible: true});
+      }.bind(this)
+    });
+  },
+  save: function() {
     var file = this.state.files[0];
 
     var fd = new FormData();
@@ -167,6 +189,7 @@ const EditModal = React.createClass({
     fd.append('end', this.state.end);
     fd.append('id', this.state.id);
     fd.append('imageEdited', this.state.imageEdited);
+    fd.append('description', this.state.description);
     fd.append('image', file);
     //console.log('FormData: '+JSON.stringify(fd));
     var data2 = {
@@ -201,7 +224,9 @@ const EditModal = React.createClass({
     });
   },
   handleNameChange: function(event) {
-    this.setState({ name: event.target.value });
+    if (event.target.value.length <= 20){
+      this.setState({ name: event.target.value });
+    }
   },
   handleStartChange: function(event) {
     this.setState({ start: event.target.value });
@@ -209,10 +234,14 @@ const EditModal = React.createClass({
   handleEndChange: function(event) {
     this.setState({ end: event.target.value });
   },
+  handleDescriptionChange: function(event){
+    if (event.target.value.length <= 245){
+      this.setState({ description: event.target.value });
+    }
+  },
   handleAlertDismiss() {
     this.setState({alertVisible: false});
   },
-
   handleAlertShow() {
     this.setState({alertVisible: true});
   },
@@ -257,6 +286,7 @@ const EditModal = React.createClass({
     var name = this.state.name;
     var start = this.state.start;
     var end = this.state.end;
+    var description = this.state.description;
 
     var alert = (
           <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss} >
@@ -318,6 +348,7 @@ const EditModal = React.createClass({
               <Input type="text" label="Name" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={name} onChange={this.handleNameChange}/>
               <Input type="text" label="Start" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={start} onChange={this.handleStartChange}/>
               <Input type="text" label="End" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={end} onChange={this.handleEndChange}/>
+              <Input type="textarea" label="Description" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={description} onChange={this.handleDescriptionChange}/>
               <div>
                 <Dropzone ref="dropzone" style={DropZoneStyle} onDrop={this.onDrop} multiple={false} disableClick={false}>
                 </Dropzone>
@@ -336,6 +367,7 @@ const EditModal = React.createClass({
           </form>
           </Modal.Body>
           <Modal.Footer>
+            <Button onClick={this.delete} bsStyle="danger">Delete</Button>
             <Button onClick={this.save} bsStyle="success">Save</Button>
             <Button onClick={this.handleClose}>Close</Button>
           </Modal.Footer>
@@ -377,13 +409,14 @@ var Presentations = React.createClass({
       var name = presentation.name;
       var image = presentation.image;
       var id = presentation.objectId;
+      var description = presentation.description;
       return (
         <tr key={id}>
           <td >{index+1}</td>
           <td >{name}</td>
           <td >{start}</td>
           <td >{end}</td>
-          <td ><EditModal id={id} name={name} start={start} end={end} image={image}/></td>
+          <td ><EditModal id={id} name={name} start={start} end={end} image={image} description={description}/></td>
         </tr>
       );
     }, this);

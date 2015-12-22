@@ -339,6 +339,24 @@ module.exports = {
     });
   },
 
+  deletePost: function(req, res){
+    if (req.wantsJSON){
+      var id = req.param('id');
+      sails.log("I delete the object id: "+id);
+      Parse.Cloud.run('deletePresentation', {id: id}, {
+        success: function(results) {
+          sails.log("Success to delete presentation, results: "+results);
+          return res.json(results);
+        },
+        error: function(error) {
+          sails.log("[Delete presentation] Error: updatePresentation " + error.code + " " + error.message);
+          res.view('500', {error : "Error: Unable to delete this presentation " + error.code + " " + error.message});
+        }
+      });
+    } else {
+      sails.log("I don't have JSON");
+    }
+  },
 
   editPost: function(req,res){
     if (req.wantsJSON){
@@ -346,6 +364,7 @@ module.exports = {
       var start = new Date(req.param('start'));
       var end = new Date(req.param('end'));
       var id = req.param('id');
+      var description = req.param('description');
       var image = req.file('image');
       var imageEdited = req.param('imageEdited');
       sails.log("Params: name: "+name+" id: "+id+" start: "+ start+" end: "+end);
@@ -357,21 +376,19 @@ module.exports = {
       image.upload(function onUploadComplete (err, files) {
         sails.log("Je suis direct apres image.upload");
         if (err) return res.redirect('/500');;
-        var file = files[0];
-        var filePath = file.fd;
-        var fileName = file.filename;
-        var fileSize = file.size;
-        var contentType = file.type;
-        var fs = require('fs');
-        var fileData = fs.readFileSync(filePath);
-        fileData = Array.prototype.slice.call(new Buffer(fileData), 0);
-        //var fileData = request.params.file;
-        //var fileName = request.params.fileName;
-        var newFile = new Parse.File(fileName, fileData);
-         sails.log("file ouside: ");
-         sails.log(file);
-        var that = this;
         if (imageEdited == "true"){
+          var file = files[0];
+          var filePath = file.fd;
+          var fileName = file.filename;
+          var fileSize = file.size;
+          var contentType = file.type;
+          var fs = require('fs');
+          var fileData = fs.readFileSync(filePath);
+          fileData = Array.prototype.slice.call(new Buffer(fileData), 0);
+          var newFile = new Parse.File(fileName, fileData);
+           sails.log("file ouside: ");
+           sails.log(file);
+          var that = this;
           sails.log("I'm in imageEdited");
           query.get(id, {
             success: function(object) {
@@ -381,6 +398,7 @@ module.exports = {
               object.set("name", name);
               object.set("start", start);
               object.set("end", end);
+              object.set("description", description);
 
               console.log("[updatePresentation --> with file] Name of my file updated: "+fileName);
               console.log("[updatePresentation --> with file] info file: "+ file);
@@ -419,6 +437,7 @@ module.exports = {
           object.set("name", name);
           object.set("start", start);
           object.set("end", end);
+          object.set("description", description);
           object.save(null, {
             success: function(presentation) {
               sails.log("I'm in success object. save");

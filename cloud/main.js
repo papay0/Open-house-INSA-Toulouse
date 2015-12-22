@@ -56,6 +56,14 @@ Parse.Cloud.define("getPlanning", function(req, res){
 	}
 }),
 
+Parse.Cloud.define("deletePresentation", function(req, res){
+	if(req.user && request.user.get('admin')){
+
+	}else{
+		res.error("You are not logged in or admin "+error.message);
+	}
+}),
+
 Parse.Cloud.define("suscribePresentation", function(request, response){
 	if (request.user){
 		var presentations = Parse.Object.extend("Presentations");
