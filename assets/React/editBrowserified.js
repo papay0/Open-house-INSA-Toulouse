@@ -157,7 +157,11 @@ const EditModal = React.createClass({displayName: "EditModal",
       alertVisible: false,
       messageError: "",
       files: [this.props.image],
-      imageEdited: false
+      imageEdited: false,
+      locations: JSON.parse(this.props.locations), // JSON(locations)
+      locationGeopoint: this.props.location, // (lat, long) of the presentation
+      locations_array: this.props.locations_array,
+      locationAddress: this.fillAddressPresentation(),
     };
   },
   delete: function() {
@@ -180,6 +184,22 @@ const EditModal = React.createClass({displayName: "EditModal",
         this.setState({alertVisible: true});
       }.bind(this)
     });
+  },
+  componentWillReceiveProps(){
+    //alert("WillReceiveProps");
+    this.setState({ locations: JSON.parse(this.props.locations)});
+  },
+  fillAddressPresentation: function(){
+        // for(var index in this.state.locations){
+        //     var geopoint = JSON.stringify(data[index]['geopoint']);
+        //     var address = JSON.stringify(data[index]['address']);
+        //     if (geopoint === this.state.locationGeopoint){
+        //       this.setState({ locationAddress: address});
+        //       alert('address:'+address);
+        //     }
+        //   }
+          //alert(JSON.parse(this.props.locations));
+          //this.forceUpdate();
   },
   save: function() {
     var file = this.state.files[0];
@@ -225,6 +245,8 @@ const EditModal = React.createClass({displayName: "EditModal",
     });
   },
   handleNameChange: function(event) {
+    //alert(JSON.stringify(this.state.locations));
+    alert(JSON.stringify(this.state.locations_array));
     if (event.target.value.length <= 20){
       this.setState({ name: event.target.value });
     }
@@ -239,6 +261,9 @@ const EditModal = React.createClass({displayName: "EditModal",
     if (event.target.value.length <= 245){
       this.setState({ description: event.target.value });
     }
+  },
+  handleLocationChange: function(event){
+    alert("location: "+event.target.value);
   },
   handleAlertDismiss() {
     this.setState({alertVisible: false});
@@ -288,6 +313,7 @@ const EditModal = React.createClass({displayName: "EditModal",
     var start = this.state.start;
     var end = this.state.end;
     var description = this.state.description;
+    var locationAddress = this.state.locationAddress;
 
     var alert = (
           React.createElement(Alert, {bsStyle: "danger", onDismiss: this.handleAlertDismiss}, 
@@ -349,6 +375,13 @@ const EditModal = React.createClass({displayName: "EditModal",
               React.createElement(Input, {type: "text", label: "Name", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10", value: name, onChange: this.handleNameChange}), 
               React.createElement(Input, {type: "text", label: "Start", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10", value: start, onChange: this.handleStartChange}), 
               React.createElement(Input, {type: "text", label: "End", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10", value: end, onChange: this.handleEndChange}), 
+              React.createElement(Input, {type: "select", label: "Locations", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10", placeholder: "Bandol", value: locationAddress, onChange: this.handleLocationChange}, 
+                this.state.locations.map(function (location) {
+                return (
+                  React.createElement("option", {value: JSON.stringify(location.geopoint)}, location.address)
+                );
+              })
+              ), 
               React.createElement(Input, {type: "textarea", label: "Description", labelClassName: "col-xs-2", wrapperClassName: "col-xs-10", value: description, onChange: this.handleDescriptionChange}), 
               React.createElement("div", null, 
                 React.createElement(Dropzone, {ref: "dropzone", style: DropZoneStyle, onDrop: this.onDrop, multiple: false, disableClick: false}
@@ -383,7 +416,7 @@ const EditModal = React.createClass({displayName: "EditModal",
 var Presentations = React.createClass({displayName: "Presentations",
   loadPresentationsFromServer: function(){
     $.ajax({
-          url: this.props.url,
+          url: "/react/presentations/",
           dataType: 'json',
           cache: false,
           success: function(data) {
@@ -393,10 +426,43 @@ var Presentations = React.createClass({displayName: "Presentations",
             console.error(this.props.url, status, err.toString());
           }.bind(this)
         });
+        $.ajax({
+              url: "/react/locations/",
+              dataType: 'json',
+              cache: false,
+              success: function(data) {
+                //this.fillLocationArrayFromAjaxData(data);
+                this.setState({locations_parse: data});
+                console.log("locations received: "+data);
+                //this.forceUpdate();
+              }.bind(this),
+              error: function(xhr, status, err) {
+                console.error("/react/locations/", status, err.toString());
+              }.bind(this)
+            });
+  },
+  fillLocationArrayFromAjaxData: function(data){
+    var locations_array_tmp = [];
+    for(var index in data){
+            console.log("index: "+index);
+            console.log("data[location] "+JSON.stringify(data[index]));
+            console.log("address: "+JSON.stringify(data[index]['address']));
+            console.log("geopoint: "+JSON.stringify(data[index]['geopoint']));
+            var geopoint = JSON.stringify(data[index]['geopoint']);
+            var address = JSON.stringify(data[index]['address']);
+            locations_array_tmp[geopoint] = address;
+          }
+        this.setState({locations_array: locations_array_tmp});
+        for (var a in this.state.locations_array){
+          console.log("address array: "+a);
+        }
+        //alert(locations_array_tmp);
   },
   getInitialState: function() {
     return {
-      presentations_parse: []
+      presentations_parse: [],
+      locations_parse: [],
+      locations_array: []
     };
   },
   componentDidMount: function() {
@@ -411,13 +477,17 @@ var Presentations = React.createClass({displayName: "Presentations",
       var image = presentation.image;
       var id = presentation.objectId;
       var description = presentation.description;
+      var locations = JSON.stringify(this.state.locations_parse);
+      var location = presentation.location;
+      var locations_array = this.state.locations_array;
       return (
         React.createElement("tr", {key: id}, 
           React.createElement("td", null, index+1), 
           React.createElement("td", null, name), 
+          React.createElement("td", null, " ", locations, " "), 
           React.createElement("td", null, start), 
           React.createElement("td", null, end), 
-          React.createElement("td", null, React.createElement(EditModal, {id: id, name: name, start: start, end: end, image: image, description: description}))
+          React.createElement("td", null, React.createElement(EditModal, {id: id, name: name, start: start, end: end, image: image, description: description, locations: locations, location: location, locations_array: locations_array}))
         )
       );
     }, this);
@@ -430,6 +500,7 @@ var Presentations = React.createClass({displayName: "Presentations",
           React.createElement("tr", null, 
             React.createElement("th", null, "#"), 
             React.createElement("th", null, "Name"), 
+            React.createElement("th", null, "Location "), 
             React.createElement("th", null, "Start"), 
             React.createElement("th", null, "End"), 
             React.createElement("th", {style: thEditStyle}, "Edit")

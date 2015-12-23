@@ -329,6 +329,18 @@ module.exports = {
     });
   },
 
+  getLocations: function(req, res){
+    Parse.Cloud.run('getLocations', {}, {
+      success: function(results) {
+        return res.json(results);
+      },
+      error: function(error) {
+        sails.log("[getLocations] Error: getLocations " + error.code + " " + error.message);
+        res.view('500', {error : "[getLocations] Error getLocations " + error.code + " " + error.message});
+      }
+    });
+  },
+
   edit: function(req, res){
     Parse.Cloud.run('getPresentations', {}, {
       success: function(results) {

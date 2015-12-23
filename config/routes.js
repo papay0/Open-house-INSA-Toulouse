@@ -94,6 +94,11 @@
       action: 'getPresentations'
     },
 
+    'get /react/locations': {
+      controller: 'PresentationsController',
+      action: 'getLocations'
+    },
+
     /***************************************************************************
     *                                                                          *
     *                         Planning                                         *
