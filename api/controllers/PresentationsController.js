@@ -187,7 +187,7 @@ module.exports = {
   createPost: function(req, res){
 
     sails.log("PresentationsController --> create");
-    if (req.param('name') && req.param('start') && req.param('end') && req.param('description') && req.file('picture')){
+    if (req.param('name') && req.param('start') && req.param('end') && req.param('description') && req.file('picture') && req.param('selectedLocation')){
 
       var name = req.param('name');
       var start = new Date(req.param('start'));
@@ -395,8 +395,14 @@ module.exports = {
       var description = req.param('description');
       var image = req.file('image');
       var imageEdited = req.param('imageEdited');
-      sails.log("Params: name: "+name+" id: "+id+" start: "+ start+" end: "+end);
-      sails.log("image: "+image);
+      var geopointPresentation = JSON.parse(req.param('geopointPresentation'));
+      var lat = geopointPresentation['latitude'];
+      var long = geopointPresentation['longitude'];
+      sails.log("lat: "+lat+ " long: "+long);
+      var geoPoint = new Parse.GeoPoint(lat, long);
+      sails.log("[Update] geopointPresentation "+geopointPresentation);
+      //sails.log("Params: name: "+name+" id: "+id+" start: "+ start+" end: "+end);
+      //sails.log("image: "+image);
       sails.log("Image edited: "+imageEdited);
       var presentations = Parse.Object.extend("Presentations");
       var query = new Parse.Query(presentations);
@@ -426,6 +432,8 @@ module.exports = {
               object.set("name", name);
               object.set("start", start);
               object.set("end", end);
+              object.set("location", geoPoint);
+
               object.set("description", description);
 
               console.log("[updatePresentation --> with file] Name of my file updated: "+fileName);
@@ -466,6 +474,7 @@ module.exports = {
           object.set("start", start);
           object.set("end", end);
           object.set("description", description);
+          object.set("location", geoPoint);
           object.save(null, {
             success: function(presentation) {
               sails.log("I'm in success object. save");

@@ -6,7 +6,7 @@
 			<% if(flash && flash.success) { %>
 				<div class="alert alert-success alert-dismissible" role="alert">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<p style="color : blue;"><strong>Warning!</strong> <%- JSON.stringify(flash.success) %></p>
+						<p style="color : blue;"><%- JSON.stringify(flash.success) %></p>
 				</div>
 				<% } else if (flash && flash.err){ %>
 					<div class="alert alert-danger alert-dismissible" role="alert">

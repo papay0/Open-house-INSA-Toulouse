@@ -157,10 +157,14 @@ const EditModal = React.createClass({
       messageError: "",
       files: [this.props.image],
       imageEdited: false,
-      locations: JSON.parse(this.props.locations), // JSON(locations)
-      locationGeopoint: this.props.location, // (lat, long) of the presentation
+      //locations: this.props.locations, // JSON(locations)
+      locations: [], // JSON(locations)
+      //locationGeopoint: this.props.location, // (lat, long) of the presentation
+      locationGeopoint: {}, // (lat, long) of the presentation
       locations_array: this.props.locations_array,
-      locationAddress: ""
+      locationAddress: "",
+      endOfAjaxRequest: false,
+      firstSetLocation: true
     };
   },
   delete: function() {
@@ -184,15 +188,111 @@ const EditModal = React.createClass({
       }.bind(this)
     });
   },
+  // shouldComponentUpdate(){
+  //   return (this.state.locations.length === 0);
+  // },
+//  shouldComponentUpdate(){
+    // console.log("I should update");
+    // var data = this.props.locations;
+    // if (data.length > 0){
+    //   console.log("I stop update component in shouldComponentUpdate");
+    //   return false;
+    // } else {
+    //   return true;
+    // }
+
+
+// ------------------------------------------
+
+
+
+
+    // if (data.length > 0){
+    //   for(var index in data){
+    //       var geopoint = data[index]['geopoint'];
+    //       var geopoint_presentation = this.state.locationGeopoint;
+    //       var address = JSON.stringify(data[index]['address']);
+    //       var lat_data = geopoint['latitude'];
+    //       var long_data = geopoint['longitude'];
+    //       var lat_presentation = geopoint_presentation['latitude'];
+    //       var long_presentation = geopoint_presentation['longitude'];
+    //       //  console.log("geopoint actuelle: "+JSON.stringify(geopoint));
+    //         //console.log("geopoint de la presentation: "+JSON.stringify(this.state.locationGeopoint));
+    //         //alert("a");
+    //       //  console.log("lat pres: "+lat_presentation);
+    //         //console.log("lat data: "+lat_data);
+    //       if ((lat_presentation === lat_data) && (long_presentation === long_data)){
+    //         console.log("BBOOOYAAAAA, it matches!!, adress: "+ address);
+    //         this.setState({ locationAddress: address});
+    //         //alert('address:'+address);
+    //       }
+    //     }
+    //     this.setState({ locations: this.props.locations});
+    //     this.setState({ locationGeopoint: this.props.location});
+    //   return false;
+    // } else {
+    //   return true;
+    // }
+
+
+//  },
   componentWillReceiveProps(){
+
     //alert("WillReceiveProps");
-    this.setState({ locations: JSON.parse(this.props.locations)});
-    this.fillAddressPresentation();
+    //alert("Locations JSON: "+this.state.locations);
+    var data = this.state.locations;
+
+    //if (typeof data != 'undefined'){
+    // for(var index in data){
+    //     var geopoint = data[index]['geopoint'];
+    //     var geopoint_presentation = this.state.locationGeopoint;
+    //     var address = JSON.stringify(data[index]['address']);
+    //     var lat_data = geopoint['latitude'];
+    //     var long_data = geopoint['longitude'];
+    //     var lat_presentation = geopoint_presentation['latitude'];
+    //     var long_presentation = geopoint_presentation['longitude'];
+    //     //  console.log("geopoint actuelle: "+JSON.stringify(geopoint));
+    //       //console.log("geopoint de la presentation: "+JSON.stringify(this.state.locationGeopoint));
+    //       //alert("a");
+    //     //  console.log("lat pres: "+lat_presentation);
+    //       //console.log("lat data: "+lat_data);
+    //     if ((lat_presentation === lat_data) && (long_presentation === long_data)){
+    //       console.log("BBOOOYAAAAA, it matches!!, adress: "+ address);
+    //       this.setState({ locationAddress: address});
+    //       //alert('address:'+address);
+    //     }
+    //   }
+    // } else {
+    //   console.log("data is undefined");
+    // }
+    // if (this.state.firstSetLocation === true){
+    //   console.log("je set firstSetLocation à false");
+    if (data.length === 0 || this.state.firstSetLocation === true){
+      //if (this.state.firstSetLocation === true){
+        this.setState({ firstSetLocation: false});
+      console.log("I set location & geopoint");
+       this.setState({ locations: this.props.locations});
+      // alert("Au tout début, j'ai locationGeopoint = "+ JSON.stringify(this.props.location));
+       this.setState({ locationGeopoint: JSON.stringify(this.props.location)});
+     //}
+    }
+    //   this.setState({ firstSetLocation: false});
+    // }
+    console.log("data.length "+data.length);
+    // if ((data.length > 0) && (this.state.endOfAjaxRequest ===  false)){
+    //   console.log("Je rentre dans la fin d'ajax request");
+    //   this.setState({ locations: this.props.locations});
+    //   this.setState({ endOfAjaxRequest: true});
+    // }
+    //console.log(this.state.locationGeopoint);
+    //this.fillAddressPresentation();
+    //console.log("I force update");
+    //this.forceUpdate();
   },
   fillAddressPresentation: function(){
 
-    if (this.state.locations != null ......)
-
+  //  if (this.state.locations != null ......)
+  // ne pas mettre this.state.locations mais plutot data ...
         for(var index in this.state.locations){
             var geopoint = JSON.stringify(data[index]['geopoint']);
             var address = JSON.stringify(data[index]['address']);
@@ -214,6 +314,7 @@ const EditModal = React.createClass({
     fd.append('id', this.state.id);
     fd.append('imageEdited', this.state.imageEdited);
     fd.append('description', this.state.description);
+    fd.append('geopointPresentation', this.state.locationGeopoint);
     fd.append('image', file);
     //console.log('FormData: '+JSON.stringify(fd));
     var data2 = {
@@ -249,7 +350,8 @@ const EditModal = React.createClass({
   },
   handleNameChange: function(event) {
     //alert(JSON.stringify(this.state.locations));
-    alert(JSON.stringify(this.state.locations_array));
+    //alert(JSON.stringify(this.state.locations_array));
+    alert(this.state.locationAddress);
     if (event.target.value.length <= 20){
       this.setState({ name: event.target.value });
     }
@@ -266,7 +368,12 @@ const EditModal = React.createClass({
     }
   },
   handleLocationChange: function(event){
-    alert("location: "+event.target.value);
+    console.log("location changed 1: "+event.target.value);
+    //this.setState({ locationAddress: event.target.value });
+  //  alert(event.target.value);
+    this.setState({ locationGeopoint: event.target.value });
+    //alert(this.state.locationGeopoint);
+    console.log("location changed 2: "+this.state.locationGeopoint);
   },
   handleAlertDismiss() {
     this.setState({alertVisible: false});
@@ -312,11 +419,14 @@ const EditModal = React.createClass({
    console.log('Selected file:', event.target.files[0]);
  },
   render() {
+    console.log("Je render");
     var name = this.state.name;
     var start = this.state.start;
     var end = this.state.end;
     var description = this.state.description;
     var locationAddress = this.state.locationAddress;
+    var geopointPresentation = this.state.locationGeopoint;
+
 
     var alert = (
           <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss} >
@@ -354,6 +464,7 @@ const EditModal = React.createClass({
     };
 
     return (
+
       <div className="modal-container">
         <Button
           bsStyle={this.state.styleButton}
@@ -378,7 +489,7 @@ const EditModal = React.createClass({
               <Input type="text" label="Name" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={name} onChange={this.handleNameChange}/>
               <Input type="text" label="Start" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={start} onChange={this.handleStartChange}/>
               <Input type="text" label="End" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={end} onChange={this.handleEndChange}/>
-              <Input type="select" label="Locations" labelClassName="col-xs-2" wrapperClassName="col-xs-10" placeholder="Bandol" value={locationAddress} onChange={this.handleLocationChange}>
+              <Input type="select" label="Locations" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value={geopointPresentation} onChange={this.handleLocationChange}>
                 {this.state.locations.map(function (location) {
                 return (
                   <option value={JSON.stringify(location.geopoint)}>{location.address}</option>
@@ -436,7 +547,7 @@ var Presentations = React.createClass({
               success: function(data) {
                 //this.fillLocationArrayFromAjaxData(data);
                 this.setState({locations_parse: data});
-                console.log("locations received: "+data);
+                //console.log("locations received: "+data);
                 //this.forceUpdate();
               }.bind(this),
               error: function(xhr, status, err) {
@@ -480,14 +591,13 @@ var Presentations = React.createClass({
       var image = presentation.image;
       var id = presentation.objectId;
       var description = presentation.description;
-      var locations = JSON.stringify(this.state.locations_parse);
+      var locations = this.state.locations_parse;
       var location = presentation.location;
       var locations_array = this.state.locations_array;
       return (
         <tr key={id}>
           <td >{index+1}</td>
           <td >{name}</td>
-          <td > {locations} </td>
           <td >{start}</td>
           <td >{end}</td>
           <td ><EditModal id={id} name={name} start={start} end={end} image={image} description={description} locations={locations} location={location} locations_array={locations_array}/></td>
@@ -503,7 +613,6 @@ var Presentations = React.createClass({
           <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Location </th>
             <th>Start</th>
             <th>End</th>
             <th style={thEditStyle}>Edit</th>
@@ -521,7 +630,7 @@ var Presentations = React.createClass({
 });
 
 var DisplayContainer2 = React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    //mixins: [React.addons.LinkedStateMixin],
     getInitialState:function(){
         return{
             value:'My Value',
@@ -530,11 +639,11 @@ var DisplayContainer2 = React.createClass({
     },
     render:function(){
         return (
-            <div className="DisplayContainer">
-                <h4>{this.state.value}</h4>
-                <h4>{this.state.value2}</h4>
-                <InputBox2 valueLink={this.linkState('value')}  valueLink={this.linkState('value2')} />
-            </div>
+          <Input type="select" label="Locations" labelClassName="col-xs-2" wrapperClassName="col-xs-10" value="PL" >
+            <option value="Arthur">Coucou</option>
+            <option value="PL">Pierre-Lou</option>
+            <option value="Cha">Charlotte</option>
+          </Input>
         );
     }
 });
@@ -551,7 +660,7 @@ var InputBox2 = React.createClass({
 });
 
 ReactDOM.render(
-   //<DisplayContainer2/>,
+  // <DisplayContainer2/>,
     <Presentations url="/react/presentations/" pollInterval={2000}/>,
     document.getElementById('content')
   );
