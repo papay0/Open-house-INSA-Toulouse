@@ -8,8 +8,7 @@
  module.exports = {
 
  	'Admin':function(req, res){
- 		res.view('Admin/index', {layout: 'Admin/admin'});
+ 		res.view('Presentations/edit', {layout: 'Admin/admin'});
  	}
 
  };
-

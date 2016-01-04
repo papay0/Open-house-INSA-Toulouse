@@ -5,7 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-var passport = require('passport');
+//var passport = require('passport');
 
 module.exports = {
 
@@ -52,7 +52,7 @@ module.exports = {
 		I think it's better to use Parse.User.logIn than cloud code function.
 		Because I think it's more secure.
 		*/
-
+		sails.log("LOGIN FUNCTION");
 		sails.log(req.user);
 		sails.log(req.session.sid);
 		sails.log(sails.sid);
