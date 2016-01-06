@@ -1,6 +1,6 @@
 <div class="container">
 
-	<h1>Create presentation</h1>
+	<h1>Créer une présentation</h1>
 	<form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data" action="/presentations/createPost">
 		<fieldset>
 			<% if(flash && flash.success) { %>
@@ -19,9 +19,9 @@
 			<div class="container">
 				<legend>Nom de la presentation</legend>
 				<div class="form-group">
-					<p>Taille max: 20 caractères</p>
 					<div class="col-md-5">
 						<input id="textinput" name="name" type="text" maxlength="20" placeholder="Nom de la présentation" class="form-control input-md" required="">
+						<p>Taille max: 20 caractères</p>
 					</div>
 				</div>
 			</div>
@@ -68,7 +68,7 @@
 				<div class='col-md-5'>
 					<div class="form-group">
 						<select class="form-control" id="selectedLocation" name="selectedLocation">
-							<% _.each(locations, function (location) { %>
+							<% _.each(infos[0], function (location) { %>
 			        <option value="<%= JSON.stringify(location.get('geopoint')) %>"><%= location.get('address') %></option>
 							<% }) %>
 			      </select>

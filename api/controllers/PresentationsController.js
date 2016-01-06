@@ -312,19 +312,31 @@ module.exports = {
   },
 
   create: function(req, res){
-    Parse.Cloud.run('getLocations', {}, {
+    Parse.Cloud.run('getInfoCreatePresentation', {}, {
       success: function(results) {
         //sails.log("Success getLocations: "+JSON.stringify(results));
         res.locals.flash = _.clone(req.session.flash);
         req.session.flash = {};
         res.view('Presentations/create', {
-          locations: results,
+          infos: results,
           layout: 'Admin/admin'
         })
       },
       error: function(error) {
         sails.log("[create] Error: getLocations " + error.code + " " + error.message);
         res.view('500', {error : "[--> View] Error getLocations " + error.code + " " + error.message});
+      }
+    });
+  },
+
+  getInfoCreatePresentation: function(req, res){
+    Parse.Cloud.run('getInfoCreatePresentation', {}, {
+      success: function(results) {
+        return res.json(results);
+      },
+      error: function(error) {
+        sails.log("[getInfoCreatePresentation] Error: getInfoCreatePresentation " + error.code + " " + error.message);
+        res.view('500', {error : "[getInfoCreatePresentation] Error getInfoCreatePresentation " + error.code + " " + error.message});
       }
     });
   },

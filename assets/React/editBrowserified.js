@@ -1,5 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*
+    Now it's: npm run build
     browserify -t reactify assets/React/edit.js -o assets/React/editBrowserified.js
 */
 
@@ -472,7 +473,7 @@ const EditModal = React.createClass({displayName: "EditModal",
           bsSize: "xsmall", 
           onClick: this.handleOpenModal
         }, 
-          "Edit"
+          "Editer"
         ), 
 
         React.createElement(Modal, {
@@ -613,10 +614,10 @@ var Presentations = React.createClass({displayName: "Presentations",
         React.createElement("thead", null, 
           React.createElement("tr", null, 
             React.createElement("th", null, "#"), 
-            React.createElement("th", null, "Name"), 
-            React.createElement("th", null, "Start"), 
-            React.createElement("th", null, "End"), 
-            React.createElement("th", {style: thEditStyle}, "Edit")
+            React.createElement("th", null, "Nom"), 
+            React.createElement("th", null, "Début"), 
+            React.createElement("th", null, "Fin"), 
+            React.createElement("th", {style: thEditStyle}, "Editer")
           )
           ), 
           React.createElement("tbody", null, 

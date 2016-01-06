@@ -1,4 +1,5 @@
 /*
+    Now it's: npm run build
     browserify -t reactify assets/React/edit.js -o assets/React/editBrowserified.js
 */
 
@@ -471,7 +472,7 @@ const EditModal = React.createClass({
           bsSize="xsmall"
           onClick={this.handleOpenModal}
         >
-          Edit
+          Editer
         </Button>
 
         <Modal
@@ -612,10 +613,10 @@ var Presentations = React.createClass({
         <thead>
           <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>Start</th>
-            <th>End</th>
-            <th style={thEditStyle}>Edit</th>
+            <th>Nom</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th style={thEditStyle}>Editer</th>
           </tr>
           </thead>
           <tbody>

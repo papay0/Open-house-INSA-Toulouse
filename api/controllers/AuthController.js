@@ -60,7 +60,13 @@ module.exports = {
 		if (req.user == undefined){
 			Parse.User.enableUnsafeCurrentUser();
 			var email = req.param('email');
-			var password = req.param('email');
+			if (req.param('password')){
+				var password = req.param('password');
+			} else {
+				var password = req.param('email');
+			}
+			sails.log("username: "+email);
+			sails.log("password: "+email);
 			Parse.User.logIn(email, password, {
 				success: function(user) {
 					if(req.param('remember') == "ok"){
@@ -70,6 +76,9 @@ module.exports = {
 						sails.log("On ne met pas de cookie");
 					}
 					sails.log(req.url);
+					if (user.get('admin') && !req.param('password')){
+						return res.redirect('/errorLogin');
+					}
 					return res.redirect(req.param('nextPage'));
 				},
 				error: function(user, error) {

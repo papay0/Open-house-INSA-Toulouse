@@ -56,6 +56,34 @@ Parse.Cloud.define("getPlanning", function(req, res){
 	}
 });
 
+Parse.Cloud.define("getInfoCreatePresentation", function(request, response){
+	if (request.user && request.user.get('admin')){
+		var Locations = Parse.Object.extend("Locations");
+		var query = new Parse.Query(Locations);
+		query.find({
+			success: function(results_locations) {
+				var presentations = Parse.Object.extend("Presentations");
+				var query = new Parse.Query(presentations);
+				query.find({
+					success: function(results_presentations) {
+						var results = [results_locations, results_presentations];
+						response.success(results);
+					},
+					error: function(error) {
+						response.error(error);
+					}
+				});
+				//response.success(results);
+			},
+			error: function(error) {
+				response.error(error);
+			}
+		});
+	} else {
+		response.error("You are not logged in or admin");
+	}
+});
+
 Parse.Cloud.define("getLocations", function(request, response){
 	if (request.user && request.user.get('admin')){
 		var Locations = Parse.Object.extend("Locations");
