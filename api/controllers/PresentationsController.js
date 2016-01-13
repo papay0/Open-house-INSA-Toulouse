@@ -229,7 +229,7 @@ module.exports = {
                 //response.success("File upload Successfully");
               }, error: function(file, error){
                 console.log("Error upload = "+error);
-                res.view('500', {error : "Error: Unable to save this newFile " + error.code + " " + error});
+                res.view('500', {error : "Error: Unable to save this newFile " + error + " " + error});
                 //response.error("Error upload = "+error);
               }
             }).then(function(theFile){
@@ -399,7 +399,7 @@ module.exports = {
   },
 
   editPost: function(req,res){
-    if (req.wantsJSON){
+    if (req.wantsJSON && req.param('name').length != 0 && req.param('description').length != 0 ){
       var name = req.param('name');
       var start = new Date(req.param('start'));
       var end = new Date(req.param('end'));

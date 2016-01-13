@@ -350,9 +350,6 @@ const EditModal = React.createClass({
     });
   },
   handleNameChange: function(event) {
-    //alert(JSON.stringify(this.state.locations));
-    //alert(JSON.stringify(this.state.locations_array));
-    alert(this.state.locationAddress);
     if (event.target.value.length <= 20){
       this.setState({ name: event.target.value });
     }
